@@ -1,41 +1,27 @@
+
+> boltcanvas@0.1.0 dev
+> next dev
+
 ▲ Next.js 16.3.1 (Turbopack)
 - Local:         http://localhost:3000
-- Network:       http://172.25.160.1:3000
+- Network:       http://192.168.86.250:3000
 - Environments: .env
-✓ Ready in 1253ms
-✓ Running next.config.ts took 32ms
+✓ Ready in 692ms
+✓ Running next.config.ts took 123ms
 Creating turbopack project {
-  dir: 'C:\\Users\\hsai1\\Downloads\\VEX-Nexus-Complete-UI',
+  dir: 'C:\\Users\\Found\\Downloads\\VEX-Nexus-Complete-UI-main\\VEX-Nexus-Complete-UI-main',
   testMode: true
 }
 
- GET /forgot-password 200 in 1006ms (next.js: 669ms, application-code: 337ms)
- GET /reset-password?token=GSJexpEi2gaI_ZuLiDmcfsqRtVMJR6Tidd4MIWNpjrY 200 in 301ms (next.js: 229ms, application-code: 72ms)
- GET /login?reset=1 200 in 118ms (next.js: 32ms, application-code: 85ms)
- POST /reset-password?token=GSJexpEi2gaI_ZuLiDmcfsqRtVMJR6Tidd4MIWNpjrY 200 in 564ms (next.js: 4ms, application-code: 560ms)
-  └─ ƒ resetPasswordAction({}, {}) in 323ms src/lib/actions/auth.ts
- GET /app/dashboard 200 in 424ms (next.js: 59ms, proxy.ts: 159ms, application-code: 207ms)
- GET /app/dashboard 200 in 174ms (next.js: 7ms, proxy.ts: 49ms, application-code: 118ms)
-[auth:signOut] {"session":"jwt","at":"2026-09-01T03:13:19.049Z"}
- GET / 200 in 70ms (next.js: 30ms, application-code: 40ms)
- POST /app/dashboard 200 in 148ms (next.js: 4ms, proxy.ts: 19ms, application-code: 125ms)
-  └─ ƒ signOutAction() in 16ms src/lib/actions/session.ts
-[auth:signIn] {"userId":"cmti3buem0000iij4mm93povi","provider":"credentials","at":"2026-09-01T03:13:27.625Z"}
- GET /app/dashboard 200 in 94ms (next.js: 3ms, proxy.ts: 19ms, application-code: 72ms)
- POST / 200 in 666ms (next.js: 5ms, application-code: 661ms)
-  └─ ƒ loginAction({}, {}) in 549ms src/lib/actions/auth.ts
- GET /onboarding?callbackUrl=%2Fapp%2Fdashboard 200 in 310ms (next.js: 238ms, proxy.ts: 23ms, application-code: 49ms)
- GET /onboarding?callbackUrl=%2Fapp%2Fdashboard 200 in 68ms (next.js: 7ms, proxy.ts: 24ms, application-code: 37ms)
- GET /app/dashboard 200 in 95ms (next.js: 11ms, proxy.ts: 21ms, application-code: 64ms)
- POST /onboarding?callbackUrl=%2Fapp%2Fdashboard 200 in 170ms (next.js: 10ms, proxy.ts: 14ms, application-code: 146ms)
-  └─ ƒ completeOnboardingAction({}, {}) in 36ms src/lib/actions/auth.ts
- GET /team 200 in 126ms (next.js: 51ms, proxy.ts: 19ms, application-code: 56ms)
- GET /join-team 200 in 120ms (next.js: 58ms, proxy.ts: 22ms, application-code: 40ms)
-✓ Compiled in 1287ms
- GET /app/dashboard 200 in 98ms (next.js: 11ms, proxy.ts: 29ms, application-code: 58ms)
-✓ Compiled in 287ms
- GET /app/dashboard 200 in 51ms (next.js: 6ms, proxy.ts: 10ms, application-code: 35ms)
- GET /app/dashboard 200 in 41ms (next.js: 2ms, proxy.ts: 8ms, application-code: 31ms)
-✓ Compiled in 116ms
- GET /app/dashboard 200 in 44ms (next.js: 3ms, proxy.ts: 10ms, application-code: 31ms)
-✓ Compiled in 92ms
+ GET /api/health 200 in 1802ms (next.js: 561ms, application-code: 1241ms)
+ GET / 200 in 1842ms (next.js: 439ms, application-code: 1402ms)
+ GET / 200 in 74ms (next.js: 4ms, application-code: 69ms)
+ GET / 200 in 85ms (next.js: 6ms, application-code: 79ms)
+ POST / 200 in 89ms (next.js: 4ms, application-code: 85ms)
+  └─ ƒ loginAction({}, {}) in 26ms src/lib/actions/auth.ts
+ POST / 200 in 24ms (next.js: 4ms, application-code: 20ms)
+  └─ ƒ loginAction({"error":"That email or password was not recognized."}, {}) in 8ms src/lib/actions/auth.ts
+ GET / 200 in 77ms (next.js: 3ms, application-code: 74ms)
+ POST / 200 in 19ms (next.js: 4ms, application-code: 15ms)
+  └─ ƒ loginAction({}, {}) in 5ms src/lib/actions/auth.ts
+ GET /register?callbackUrl=%2Fapp%2Fdashboard 200 in 720ms (next.js: 664ms, application-code: 56ms)

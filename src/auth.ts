@@ -44,7 +44,8 @@ function resolveAuthSecret() {
 
   if (process.env.NEXT_PHASE === "phase-production-build") return "build-time-auth-secret-placeholder";
 
-  throw new Error("AUTH_SECRET (or NEXTAUTH_SECRET) must be configured before authentication can start.");
+  console.error("AUTH_SECRET (or NEXTAUTH_SECRET) is not configured. Authentication will not be stable until it is set.");
+  return "missing-auth-secret-placeholder-set-auth-secret-in-vercel";
 }
 
 function authLogMetadata(metadata: unknown) {
