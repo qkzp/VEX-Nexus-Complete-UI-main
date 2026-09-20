@@ -1,3 +1,4 @@
+import { safeCallbackUrl } from "@/lib/safe-redirect";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -18,15 +19,16 @@ export default async function HomePage({ searchParams }: { searchParams: Params 
   const params = await searchParams;
   const session = await auth();
   let databaseUnavailable = one(params.database) === "offline";
-  const callbackUrl = one(params.callbackUrl) || "/app/dashboard";
+  const callbackUrl = safeCallbackUrl(one(params.callbackUrl));
 
   if (session?.user?.id) {
     try {
       await ensureDatabaseReady();
-      redirect(session.user.onboardingComplete ? callbackUrl : `/onboarding?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+      databaseUnavailable = false;
     } catch {
       databaseUnavailable = true;
     }
+    if (!databaseUnavailable) redirect(session.user.onboardingComplete ? callbackUrl : `/onboarding?callbackUrl=${encodeURIComponent(callbackUrl)}`);
   }
 
   return (

@@ -1,5 +1,6 @@
 "use server";
 
+import { safeCallbackUrl } from "@/lib/safe-redirect";
 import { AuthError } from "next-auth";
 import { redirect, unstable_rethrow } from "next/navigation";
 import { revalidatePath } from "next/cache";
@@ -23,11 +24,6 @@ export type AuthActionState = {
   success?: string;
   resetUrl?: string | null;
 };
-
-function safeCallbackUrl(value: FormDataEntryValue | null | undefined, fallback: string) {
-  const callbackUrl = typeof value === "string" ? value.trim() : "";
-  return callbackUrl.startsWith("/") && !callbackUrl.startsWith("//") ? callbackUrl : fallback;
-}
 
 const loginSchema = z.object({
   identifier: z.string().trim().min(3, "Enter your email address or username.").max(120),

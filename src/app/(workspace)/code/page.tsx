@@ -1,3 +1,4 @@
+import { validateRoute, type AutonomousRoute } from "@/lib/autonomous";
 import { CodeLab } from "@/components/app/code-lab";
 import { NeedsTeam } from "@/components/app/team-scope";
 import { requireCompletedOnboarding } from "@/lib/authz";
@@ -22,5 +23,11 @@ export default async function CodePage({ searchParams }: PageProps) {
       }),
     [],
   );
-  return <CodeLab teamId={team.id} activeRobotId={shared.activeRobotId} robots={robots} initialState={(shared.state.codeLab ?? {}) as Record<string, unknown>} />;
+  const field = shared.state.fieldLab as { routines?: unknown[] } | undefined;
+  const routines = (Array.isArray(field?.routines) ? field.routines : []).filter((value): value is AutonomousRoute & { id: string; selectedRobotId: string | null } => {
+    if (!value || typeof value !== "object") return false;
+    const r = value as AutonomousRoute & { id: string; selectedRobotId: string | null };
+    return typeof r.id === "string" && typeof r.name === "string" && typeof r.selectedRobotId === "string" && Array.isArray(r.routePoints) && validateRoute(r).length === 0;
+  });
+  return <CodeLab key={team.id} routines={routines} teamId={team.id} activeRobotId={shared.activeRobotId} robots={robots} initialState={(shared.state.codeLab ?? {}) as Record<string, unknown>} />;
 }

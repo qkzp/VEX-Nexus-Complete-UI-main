@@ -25,7 +25,7 @@ export async function getTeamSharedState(teamId: string): Promise<TeamWorkspaceS
     () =>
       prisma.auditLog.findFirst({
         where: { targetType: "TEAM_WORKSPACE_STATE", targetId: teamId, action: "workspace.state" },
-        orderBy: { createdAt: "desc" },
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
         select: { metadata: true, createdAt: true },
       }),
     null,
@@ -45,25 +45,37 @@ export async function updateTeamSharedState(
   patch: { activeRobotId?: string | null; selectedEventId?: number | null; state?: TeamSharedState },
   actorId?: string | null,
 ) {
-  const current = await getTeamSharedState(teamId);
-  const next = {
-    activeRobotId: Object.prototype.hasOwnProperty.call(patch, "activeRobotId") ? patch.activeRobotId ?? null : current.activeRobotId,
-    selectedEventId: Object.prototype.hasOwnProperty.call(patch, "selectedEventId") ? patch.selectedEventId ?? null : current.selectedEventId,
+  return mutateTeamState(teamId, actorId, current => ({
+    activeRobotId: Object.hasOwn(patch, "activeRobotId") ? patch.activeRobotId ?? null : current.activeRobotId,
+    selectedEventId: Object.hasOwn(patch, "selectedEventId") ? patch.selectedEventId ?? null : current.selectedEventId,
     state: patch.state ?? current.state,
-  };
-  await prisma.auditLog.create({
-    data: {
-      actorId: actorId ?? null,
-      action: "workspace.state",
-      targetType: "TEAM_WORKSPACE_STATE",
-      targetId: teamId,
-      metadata: next as Prisma.InputJsonValue,
-    },
+  }));
+}
+
+type MutableSnapshot = Pick<TeamWorkspaceSnapshot, "activeRobotId" | "selectedEventId" | "state">;
+
+async function mutateTeamState(teamId: string, actorId: string | null | undefined, mutate: (current: MutableSnapshot) => MutableSnapshot) {
+  return prisma.$transaction(async tx => {
+    // Serialize read/merge/write across server instances, preserving other sections.
+    await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${teamId}))::text`;
+    const row = await tx.auditLog.findFirst({
+      where: { targetType: "TEAM_WORKSPACE_STATE", targetId: teamId, action: "workspace.state" },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }], select: { metadata: true },
+    });
+    const meta = asObject(row?.metadata);
+    const next = mutate({
+      activeRobotId: typeof meta.activeRobotId === "string" ? meta.activeRobotId : null,
+      selectedEventId: typeof meta.selectedEventId === "number" ? meta.selectedEventId : null,
+      state: asObject(meta.state),
+    });
+    await tx.auditLog.create({ data: {
+      actorId: actorId ?? null, action: "workspace.state", targetType: "TEAM_WORKSPACE_STATE", targetId: teamId,
+      metadata: next as Prisma.InputJsonValue, createdAt: new Date(),
+    } });
+    return next;
   });
-  return next;
 }
 
 export async function updateTeamSharedSection(teamId: string, section: string, value: unknown, actorId?: string | null) {
-  const current = await getTeamSharedState(teamId);
-  return updateTeamSharedState(teamId, { state: { ...current.state, [section]: value } }, actorId);
+  return mutateTeamState(teamId, actorId, current => ({ ...current, state: { ...current.state, [section]: value } }));
 }

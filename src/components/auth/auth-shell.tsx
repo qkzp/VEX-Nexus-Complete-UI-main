@@ -25,14 +25,14 @@ export function AuthShell({ children, eyebrow, title, description, prompt }: Aut
         <div className={styles["auth-aside-copy"]}>
           <Image className={styles["auth-hero-logo"]} src="/boltcanvas-mark.svg" alt="BoltCanvas" width={440} height={440} priority />
           <p className={styles["auth-kicker"]}>Team engineering, held together</p>
-          <h2>Keep the work behind your robot in one accountable place.</h2>
+          <h2>Less time organizing. More time building.</h2>
           <p>
-            Private team spaces for builds, notebook evidence, competition research, and the decisions that move a season forward.
+            Your VEX V5 team’s home for robot setup, autonomous routes, testing, and the engineering notebook. Keep everyone ready for the next match.
           </p>
           <div className={styles["auth-trust-list"]}>
-            <div><ShieldCheck aria-hidden="true" /> Server-checked team accounts</div>
-            <div><Database aria-hidden="true" /> Workspace data stored in Prisma</div>
-            <div><Waypoints aria-hidden="true" /> Source-labelled competition data</div>
+            <div><ShieldCheck aria-hidden="true" /> Private workspaces for your team</div>
+            <div><Database aria-hidden="true" /> Shared robot configurations and test notes</div>
+            <div><Waypoints aria-hidden="true" /> Plan autonomous. Export VEXcode.</div>
           </div>
         </div>
 

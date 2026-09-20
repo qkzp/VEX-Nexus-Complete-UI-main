@@ -1,3 +1,4 @@
+import { safeCallbackUrl } from "@/lib/safe-redirect";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -19,7 +20,7 @@ function one(value: string | string[] | undefined) { return typeof value === "st
 export default async function LoginPage({ searchParams }: { searchParams: Params }) {
   const params = await searchParams;
   const session = await auth();
-  const callbackUrl = one(params.callbackUrl) || "/app/dashboard";
+  const callbackUrl = safeCallbackUrl(one(params.callbackUrl), "/app/dashboard");
   const databaseUnavailable = one(params.database) === "offline";
 
   if (session?.user?.id) {

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import {
   Activity,
+  ClipboardCheck,
   BookOpenText,
   Bot,
   Braces,
@@ -37,6 +38,7 @@ const groups = [
     { href: "/rankings", label: "World Skills", icon: Trophy },
   ]},
   { label: "TEAM", items: [
+    { href: "/team/tasks", label: "Team tasks", icon: ClipboardCheck },
     { href: "/notebook", label: "Notebook", icon: BookOpenText },
     { href: "/forum", label: "Community Forum", icon: MessageSquareText },
     { href: "/team", label: "Members & Invites", icon: UsersRound },

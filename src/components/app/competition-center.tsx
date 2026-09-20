@@ -87,8 +87,7 @@ export function CompetitionCenter() {
             </Link>
           </div>
           <div className="competition-trust-line">
-            <ShieldCheck size={15} /> Active rules status: Override v{VEX_OVERRIDE.manualVersion}, effective August 13,
-            2026. Use the official Game Manual and V5RC Q and A for binding interpretations.
+            <ShieldCheck size={15} /> Active rules status: Override v{VEX_OVERRIDE.manualVersion}, effective {VEX_OVERRIDE.effective}. Use the official Game Manual and V5RC Q and A for binding interpretations.
           </div>
         </div>
 
@@ -113,12 +112,12 @@ export function CompetitionCenter() {
         <div>
           <span>ACTIVE MANUAL</span>
           <strong>Override v{VEX_OVERRIDE.manualVersion}</strong>
-          <small>Effective August 13, 2026</small>
+          <small>Effective {VEX_OVERRIDE.effective}</small>
         </div>
         <div>
           <span>NEXT SCHEDULED</span>
           <strong>v{VEX_OVERRIDE.nextVersion}</strong>
-          <small>Release September 3, 2026 - effective September 10, 2026</small>
+          <small>Release {VEX_OVERRIDE.nextRelease} - effective {VEX_OVERRIDE.nextEffective}</small>
         </div>
         <a href={VEX_OVERRIDE.sources.qa} target="_blank" rel="noreferrer">
           Official V5RC Q and A <ExternalLink size={13} />

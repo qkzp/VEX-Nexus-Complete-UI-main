@@ -1,3 +1,4 @@
+import { safeCallbackUrl } from "@/lib/safe-redirect";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
@@ -15,7 +16,7 @@ function one(value: string | string[] | undefined) { return typeof value === "st
 export default async function RegisterPage({ searchParams }: { searchParams: Params }) {
   const params = await searchParams;
   const session = await auth();
-  const callbackUrl = one(params.callbackUrl) || "/onboarding";
+  const callbackUrl = safeCallbackUrl(one(params.callbackUrl), "/onboarding");
 
   if (session?.user?.id) {
     redirect(session.user.onboardingComplete ? "/app/dashboard" : `/onboarding?callbackUrl=${encodeURIComponent(callbackUrl)}`);

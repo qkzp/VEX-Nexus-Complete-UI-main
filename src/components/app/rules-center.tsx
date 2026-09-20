@@ -29,14 +29,14 @@ export function RulesCenter() {
         <div className="rules-status-card">
           <span>ACTIVE MANUAL</span>
           <strong>Version {VEX_OVERRIDE.manualVersion}</strong>
-          <small>Effective Aug. 13, 2026</small>
+          <small>Effective {VEX_OVERRIDE.effective}</small>
           <a href={VEX_OVERRIDE.sources.manualVersions} target="_blank" rel="noreferrer">Version schedule <ArrowUpRight size={13} /></a>
         </div>
       </header>
 
       <div className="rules-alert">
         <AlertTriangle size={17} />
-        <div><strong>Next scheduled release: v{VEX_OVERRIDE.nextVersion}</strong><span>Release Sept. 3, 2026 · effective Sept. 10, 2026. Re-check rules after each manual update.</span></div>
+        <div><strong>Next scheduled release: v{VEX_OVERRIDE.nextVersion}</strong><span>Release {VEX_OVERRIDE.nextRelease} - effective {VEX_OVERRIDE.nextEffective}. Re-check rules after each manual update.</span></div>
       </div>
 
       <section className="suite-panel">
@@ -61,7 +61,7 @@ export function RulesCenter() {
       </section>
 
       <section className="suite-panel">
-        <div className="suite-panel-heading"><div><span className="section-overline">Version 1.1</span><h2>Change detector</h2></div><span className="source-pill"><i /> VEX published</span></div>
+        <div className="suite-panel-heading"><div><span className="section-overline">Version {VEX_OVERRIDE.manualVersion}</span><h2>Published changes</h2></div><span className="source-pill"><i /> VEX published</span></div>
         <div className="change-grid">
           {VEX_OVERRIDE.changelog.map((item) => <div className="change-item" key={item}><span>CHANGED</span><p>{item}</p></div>)}
         </div>

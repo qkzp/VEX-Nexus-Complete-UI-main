@@ -18,7 +18,7 @@ export default async function FieldLabPage({ searchParams }: PageProps) {
       prisma.robot.findMany({
         where: { teamId: team.id, status: { notIn: ["ARCHIVED", "RETIRED"] } },
         orderBy: { updatedAt: "desc" },
-        select: { id: true, name: true, configuration: { select: { configurationVersion: true } } },
+        select: { id: true, name: true, configuration: { include: { motors: { orderBy: { port: "asc" } }, sensors: true, pneumatics: true, mechanisms: true } } },
       }),
     [],
   );
@@ -50,5 +50,5 @@ export default async function FieldLabPage({ searchParams }: PageProps) {
             : "",
       }
     : null;
-  return <FieldLab teamId={team.id} robots={robots.map((r)=>({ id:r.id, name:r.name, revision:r.configuration?.configurationVersion ?? 0 }))} activeRobotId={shared.activeRobotId} initialState={initialState} selectedEvent={selectedEvent} />;
+  return <FieldLab key={team.id} teamId={team.id} robots={robots.map((r)=>({ id:r.id, name:r.name, revision:r.configuration?.configurationVersion ?? 0, configuration:r.configuration }))} activeRobotId={shared.activeRobotId} initialState={initialState} selectedEvent={selectedEvent} />;
 }

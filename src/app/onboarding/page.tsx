@@ -1,3 +1,4 @@
+import { safeCallbackUrl } from "@/lib/safe-redirect";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -11,14 +12,14 @@ function one(value: string | string[] | undefined) { return typeof value === "st
 export default async function OnboardingPage({ searchParams }: { searchParams: Params }) {
   const params = await searchParams;
   const session = await auth();
-  const callbackUrl = one(params.callbackUrl) || "/app/dashboard";
+  const callbackUrl = safeCallbackUrl(one(params.callbackUrl), "/app/dashboard");
 
   if (!session?.user?.id || !session.user.email) {
     redirect(`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`);
   }
 
   if (session.user.onboardingComplete) {
-    redirect(callbackUrl);
+    redirect(callbackUrl.split("?")[0] === "/onboarding" ? "/app/dashboard" : callbackUrl);
   }
 
   return (

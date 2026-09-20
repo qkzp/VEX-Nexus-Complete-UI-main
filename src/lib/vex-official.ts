@@ -2,12 +2,12 @@ export const VEX_OVERRIDE = {
   season: "2026-27",
   game: "Override",
   seasonId: 204,
-  manualVersion: "1.1",
-  released: "2026-08-06",
-  effective: "2026-08-13",
-  nextVersion: "2.0",
-  nextRelease: "2026-09-03",
-  nextEffective: "2026-09-10",
+  manualVersion: "2.0",
+  released: "2026-09-03",
+  effective: "2026-09-10",
+  nextVersion: "2.1",
+  nextRelease: "2026-10-08",
+  nextEffective: "2026-10-15",
   fieldSize: "12 ft x 12 ft",
   inventory: { cups: 56, pins: 63, goals: 9, toggles: 4, loaders: 4 },
   scoring: {
@@ -31,10 +31,10 @@ export const VEX_OVERRIDE = {
     iso: "https://content.vexrobotics.com/docs/2026-2027/override/online-manual/assets/image/Iso.png",
   },
   changelog: [
-    "SC6 revised for clarity",
-    "SC7 clarified: ending Autonomous in Midfield is not included in scoring calculations",
-    "SG7 and Figure SG-7 updated to fix a typo and improve clarity",
-    "SG9 example interactions revised for clarity",
+    "SC8 changes Autonomous Win Point requirements; review your routine against the manual",
+    "SG11 updates handling of Match Loads",
+    "SG12 replaces the height restriction with a scoring-object placement restriction",
+    "Possession definition updated for concave robot surfaces",
   ],
 } as const;
 
@@ -51,9 +51,9 @@ export const RULE_TOPICS = [
   {
     id: "manual-version",
     title: "Current Override manual version",
-    tags: ["version", "update", "1.1", "manual"],
+    tags: ["version", "update", "2.0", "manual"],
     summary:
-      "Override Version 1.1 is active. It was released August 6, 2026 and became effective August 13, 2026. Version 2.0 is scheduled for release September 3, 2026 and effective September 10, 2026.",
+      "Rules reference checked September 20, 2026: Override Version 2.0, effective September 10. Version 2.1 is scheduled for October 8, effective October 15. Check the official manual for subsequent updates.",
     source: VEX_OVERRIDE.sources.manualVersions,
     sourceLabel: "VEX manual version schedule",
   },
