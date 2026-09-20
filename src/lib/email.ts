@@ -34,9 +34,9 @@ export async function sendPasswordResetEmail(options: { to: string; resetPath: s
   await transporter().sendMail({
     from,
     to: options.to,
-    subject: "Reset your PitRelay password",
+    subject: "Reset your BoltCanvas password",
     text: [
-      "A password reset was requested for your PitRelay account.",
+      "A password reset was requested for your BoltCanvas account.",
       "",
       "Open the link below to choose a new password:",
       resetUrl,
@@ -47,7 +47,7 @@ export async function sendPasswordResetEmail(options: { to: string; resetPath: s
     ].join("\n"),
     html: [
       "<div style=\"font-family:Arial,sans-serif;line-height:1.6;color:#10213a\">",
-      "<p>A password reset was requested for your PitRelay account.</p>",
+      "<p>A password reset was requested for your BoltCanvas account.</p>",
       "<p>Use the button below to choose a new password:</p>",
       `<p><a href="${resetUrl}" style="display:inline-block;background:#2469d8;color:#ffffff;text-decoration:none;padding:12px 18px;border-radius:8px;font-weight:700">Reset your password</a></p>`,
       `<p style="word-break:break-all;color:#4b5f7d">${resetUrl}</p>`,

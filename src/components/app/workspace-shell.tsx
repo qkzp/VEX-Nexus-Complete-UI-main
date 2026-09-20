@@ -90,10 +90,10 @@ export function WorkspaceShell({ teams, activeTeamId, currentUser, children }: W
   return (
     <div className="workspace-app">
       <aside className="workspace-sidebar">
-        <Link className="workspace-brand" href={dashboardHref} aria-label="PitRelay command center">
-          <Image className="workspace-mark-image" src="/pitrelay-mark.svg" alt="" width={44} height={44} priority />
+        <Link className="workspace-brand" href={dashboardHref} aria-label="BoltCanvas command center">
+          <Image className="workspace-mark-image" src="/boltcanvas-mark.svg" alt="" width={44} height={44} priority />
           <span>
-            <strong>PitRelay</strong>
+            <strong>BoltCanvas</strong>
             <small>Robotics team hub</small>
           </span>
         </Link>

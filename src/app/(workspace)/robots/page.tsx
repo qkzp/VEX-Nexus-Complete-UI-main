@@ -65,6 +65,6 @@ export default async function RobotsPage({ searchParams }: PageProps) {
           {shared.activeRobotId !== robot.id ? <form action={setActiveRobotAction} className="active-robot-form"><input type="hidden" name="teamId" value={team.id} /><input type="hidden" name="robotId" value={robot.id} /><input type="hidden" name="returnTo" value={`/robots?team=${encodeURIComponent(team.id)}`} /><PendingSubmitButton className="button button-quiet" pendingLabel="Setting active...">Set active</PendingSubmitButton></form> : <span className="status-chip good">Active</span>}
         </article>;
       })}
-    </div> : <div className="large-empty"><Bot size={28} /><h2>No robots yet</h2><p>Create your first profile so PitRelay can use your saved hardware instead of relying on placeholder assumptions.</p><Link href={`/robots?team=${encodeURIComponent(team.id)}&create=1`} className="button button-primary">Create robot</Link></div>}
+    </div> : <div className="large-empty"><Bot size={28} /><h2>No robots yet</h2><p>Create your first profile so BoltCanvas can use your saved hardware instead of relying on placeholder assumptions.</p><Link href={`/robots?team=${encodeURIComponent(team.id)}&create=1`} className="button button-primary">Create robot</Link></div>}
   </section>;
 }

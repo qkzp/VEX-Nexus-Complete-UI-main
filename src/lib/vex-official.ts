@@ -44,7 +44,7 @@ export const RULE_TOPICS = [
     title: "Which rules source controls?",
     tags: ["official", "manual", "qa", "source"],
     summary:
-      "Use the current official Game Manual and the official V5RC Q&A for binding competition rules. PitRelay explanations are secondary summaries and never override either source.",
+      "Use the current official Game Manual and the official V5RC Q&A for binding competition rules. BoltCanvas explanations are secondary summaries and never override either source.",
     source: VEX_OVERRIDE.sources.qa,
     sourceLabel: "Official V5RC Q&A",
   },

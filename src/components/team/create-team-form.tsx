@@ -29,7 +29,7 @@ export function CreateTeamForm({ defaultTeamNumber = "" }: { defaultTeamNumber?:
         <div className="team-form-heading">
           <p className="team-eyebrow">Team setup</p>
           <h1>Create a private workspace</h1>
-          <p>Create a blank V5RC team workspace for your PitRelay account. Team data stays scoped to members you invite.</p>
+          <p>Create a blank V5RC team workspace for your BoltCanvas account. Team data stays scoped to members you invite.</p>
         </div>
 
         <div className="team-form-grid">

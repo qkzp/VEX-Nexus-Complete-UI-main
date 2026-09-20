@@ -1,7 +1,7 @@
 export type SyncStatus = "saved" | "saving" | "offline" | "error";
 
-const cacheKey = (teamId: string, section: string) => `nexus-team-cache:${teamId}:${section}`;
-const pendingKey = (teamId: string, section: string) => `nexus-team-pending:${teamId}:${section}`;
+const cacheKey = (teamId: string, section: string) => `boltcanvas-team-cache:${teamId}:${section}`;
+const pendingKey = (teamId: string, section: string) => `boltcanvas-team-pending:${teamId}:${section}`;
 
 export function readTeamCache<T>(teamId: string, section: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;

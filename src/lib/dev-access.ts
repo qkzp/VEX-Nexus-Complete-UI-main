@@ -2,7 +2,7 @@ import { timingSafeEqual } from "node:crypto";
 import { prisma } from "@/lib/db";
 import { localDevelopmentToolsEnabled } from "@/lib/runtime-environment";
 
-export const DEV_USER_EMAIL = "dev@vex-nexus.local";
+export const DEV_USER_EMAIL = "dev@boltcanvas.local";
 export const DEV_USER_NAME = "DEV Workspace";
 
 export function devAccessConfigured() {

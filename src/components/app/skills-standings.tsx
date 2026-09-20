@@ -31,7 +31,7 @@ export function SkillsStandings({ teamNumber, team, skills, sourceFetchedAt, mes
           </div>
           <p className="page-kicker">VEX Events · World Skills</p>
           <h1>Use official records without inventing a rank.</h1>
-          <p>World Skills ordering stays on VEX Events. PitRelay shows official team metadata and raw skills records only when the VEX Events API returns them.</p>
+          <p>World Skills ordering stays on VEX Events. BoltCanvas shows official team metadata and raw skills records only when the VEX Events API returns them.</p>
         </div>
         <a href={VEX_EVENTS_PUBLIC_STANDINGS_URL} target="_blank" rel="noreferrer" className="button button-primary button-large">
           Open official leaderboard <ExternalLink size={15} />
@@ -101,7 +101,7 @@ export function SkillsStandings({ teamNumber, team, skills, sourceFetchedAt, mes
               <small>Highest score among returned official records</small>
             </article>
           ))}
-          {team && !best.length ? <div className="suite-empty">No current-season skills records were returned for this team. PitRelay does not substitute a score.</div> : null}
+          {team && !best.length ? <div className="suite-empty">No current-season skills records were returned for this team. BoltCanvas does not substitute a score.</div> : null}
         </div>
       </section>
 

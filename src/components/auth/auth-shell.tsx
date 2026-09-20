@@ -15,15 +15,15 @@ type AuthShellProps = {
 export function AuthShell({ children, eyebrow, title, description, prompt }: AuthShellProps) {
   return (
     <main className={styles["auth-shell"]}>
-      <aside className={styles["auth-aside"]} aria-label="PitRelay account access">
+      <aside className={styles["auth-aside"]} aria-label="BoltCanvas account access">
         <div className={styles["auth-grid"]} aria-hidden="true" />
-        <Link className={styles["auth-brand"]} href="/" aria-label="PitRelay home">
-          <Image className={styles["auth-brand-logo"]} src="/pitrelay-mark.svg" alt="" width={36} height={36} priority />
-          <span>PITRELAY</span>
+        <Link className={styles["auth-brand"]} href="/" aria-label="BoltCanvas home">
+          <Image className={styles["auth-brand-logo"]} src="/boltcanvas-mark.svg" alt="" width={36} height={36} priority />
+          <span>BOLTCANVAS</span>
         </Link>
 
         <div className={styles["auth-aside-copy"]}>
-          <Image className={styles["auth-hero-logo"]} src="/pitrelay-mark.svg" alt="PitRelay" width={440} height={440} priority />
+          <Image className={styles["auth-hero-logo"]} src="/boltcanvas-mark.svg" alt="BoltCanvas" width={440} height={440} priority />
           <p className={styles["auth-kicker"]}>Team engineering, held together</p>
           <h2>Keep the work behind your robot in one accountable place.</h2>
           <p>
@@ -36,7 +36,7 @@ export function AuthShell({ children, eyebrow, title, description, prompt }: Aut
           </div>
         </div>
 
-        <p className={styles["auth-aside-foot"]}>PITRELAY / COMPETITION OPERATIONS</p>
+        <p className={styles["auth-aside-foot"]}>BOLTCANVAS / COMPETITION OPERATIONS</p>
       </aside>
 
       <section className={styles["auth-main"]}>

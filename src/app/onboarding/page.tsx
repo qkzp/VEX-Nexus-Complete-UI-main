@@ -24,9 +24,9 @@ export default async function OnboardingPage({ searchParams }: { searchParams: P
   return (
     <main className={styles["onboarding-shell"]}>
       <header className={styles["onboarding-topbar"]}>
-        <Link className={styles["onboarding-brand"]} href="/" aria-label="PitRelay home">
-          <Image className={styles["onboarding-brand-logo"]} src="/pitrelay-mark.svg" alt="" width={30} height={30} priority />
-          <span>PITRELAY</span>
+        <Link className={styles["onboarding-brand"]} href="/" aria-label="BoltCanvas home">
+          <Image className={styles["onboarding-brand-logo"]} src="/boltcanvas-mark.svg" alt="" width={30} height={30} priority />
+          <span>BOLTCANVAS</span>
         </Link>
         <span className={styles["onboarding-progress"]}>PROFILE SETUP / STEP 1 OF 1</span>
       </header>

@@ -7,9 +7,9 @@ import styles from "./public-ui.module.css";
 export function PublicHeader() {
   return (
     <header className={styles["public-header"]}>
-      <Link className={styles["public-logo"]} href="/" aria-label="PitRelay home">
-        <Image className={styles["public-logo-image"]} src="/pitrelay-mark.svg" alt="" width={34} height={34} priority />
-        PITRELAY
+      <Link className={styles["public-logo"]} href="/" aria-label="BoltCanvas home">
+        <Image className={styles["public-logo-image"]} src="/boltcanvas-mark.svg" alt="" width={34} height={34} priority />
+        BOLTCANVAS
       </Link>
       <nav className={styles["public-nav"]} aria-label="Main navigation">
         <a href="#workflow">Workflow</a>
@@ -27,7 +27,7 @@ export function PublicHeader() {
 export function PublicFooter() {
   return (
     <footer className={styles["public-footer"]}>
-      <span>PitRelay | private team operations</span>
+      <span>BoltCanvas | private team operations</span>
       <div className={styles["public-footer-links"]}>
         <Link href="/terms">Terms</Link>
         <Link href="/privacy">Privacy</Link>
@@ -118,7 +118,7 @@ export function LegalPage({ title, description, children }: { title: string; des
       <PublicHeader />
       <article className={styles["public-legal"]}>
         <header className={styles["public-legal-header"]}>
-          <p className={styles["public-eyebrow"]}>PitRelay policy</p>
+          <p className={styles["public-eyebrow"]}>BoltCanvas policy</p>
           <h1>{title}</h1>
           <p>{description}</p>
         </header>

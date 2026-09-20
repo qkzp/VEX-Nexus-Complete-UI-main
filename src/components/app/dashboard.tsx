@@ -289,7 +289,7 @@ export function CommandCenter({ userName, team, data }: DashboardProps) {
               <Bot size={24} aria-hidden="true" />
               <div>
                 <strong>No robots yet</strong>
-                <p>Create the first team robot profile before asking PitRelay to reason about hardware.</p>
+                <p>Create the first team robot profile before asking BoltCanvas to reason about hardware.</p>
               </div>
               <Link href={createRobotHref} className="button button-primary">
                 Create robot
@@ -455,7 +455,7 @@ export function CommandCenter({ userName, team, data }: DashboardProps) {
           </div>
           <div className="official-disclaimer">
             <CheckCircle2 size={15} />
-            PitRelay is an independent workspace and is not an official VEX Robotics service.
+            BoltCanvas is an independent workspace and is not an official VEX Robotics service.
           </div>
         </aside>
       </div>

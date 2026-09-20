@@ -2,9 +2,9 @@ import { existsSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { PrismaClient } from "@prisma/client";
 
-const marker = resolve(process.cwd(), ".vex-nexus-demo-initialized");
+const marker = resolve(process.cwd(), ".boltcanvas-demo-initialized");
 if (existsSync(marker)) {
-  console.log("VEX Nexus demo database already initialized; preserving current demo data.");
+  console.log("BoltCanvas demo database already initialized; preserving current demo data.");
   process.exit(0);
 }
 

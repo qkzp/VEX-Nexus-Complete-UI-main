@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "PitRelay | Robotics Team Hub",
+  title: "BoltCanvas | Robotics Team Workspace",
   description: "Robot intelligence profiles, engineering tools, team work, and VEX V5 code workflows.",
 };
 

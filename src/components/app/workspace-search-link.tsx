@@ -31,7 +31,7 @@ export function WorkspaceSearchLink({ href }: WorkspaceSearchLinkProps) {
   }, [href, router]);
 
   return (
-    <Link href={href} className="workspace-search" aria-label="Search PitRelay">
+    <Link href={href} className="workspace-search" aria-label="Search BoltCanvas">
       <Search aria-hidden="true" size={16} />
       <span>Search your workspace</span>
       <kbd>Ctrl/Cmd K</kbd>

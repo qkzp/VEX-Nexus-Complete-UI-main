@@ -257,7 +257,7 @@ export function ResetPasswordForm({ token }: { token?: string }) {
       <div className={styles["auth-field"]}>
         <label htmlFor="reset-password">New password</label>
         <PasswordInput id="reset-password" name="password" autoComplete="new-password" placeholder="At least 8 characters" />
-        <p className={styles["auth-help"]}>Choose a new password for your PitRelay account.</p>
+        <p className={styles["auth-help"]}>Choose a new password for your BoltCanvas account.</p>
       </div>
       <div className={styles["auth-field"]}>
         <label htmlFor="reset-confirm-password">Confirm new password</label>

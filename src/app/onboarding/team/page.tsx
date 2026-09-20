@@ -23,8 +23,8 @@ export default async function TeamOnboardingPage() {
     <main className="team-setup-page">
       <header className="team-setup-header">
         <Link className="team-setup-brand" href="/">
-          <Image src="/pitrelay-mark.svg" alt="" width={40} height={40} />
-          <span><strong>PitRelay</strong><small>Team workspace setup</small></span>
+          <Image src="/boltcanvas-mark.svg" alt="" width={40} height={40} />
+          <span><strong>BoltCanvas</strong><small>Team workspace setup</small></span>
         </Link>
         <Link className="team-back-link" href="/join-team">I already have an invite code</Link>
       </header>

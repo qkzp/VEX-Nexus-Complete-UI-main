@@ -7,8 +7,8 @@ import { LoginForm } from "@/components/auth/account-forms";
 import { ensureDatabaseReady } from "@/lib/db";
 
 export const metadata: Metadata = {
-  title: "PitRelay | Team Accounts",
-  description: "Sign in to PitRelay and continue into your real team workspace.",
+  title: "BoltCanvas | Team Accounts",
+  description: "Sign in to BoltCanvas and continue into your real team workspace.",
 };
 
 type Params = Promise<{ callbackUrl?: string | string[]; reset?: string | string[]; database?: string | string[] }>;
@@ -33,10 +33,10 @@ export default async function HomePage({ searchParams }: { searchParams: Params 
     <AuthShell
       eyebrow="Team workspace access"
       title="Sign in to your workspace."
-      description="Use your PitRelay account to reach the saved team workspace, robot configuration, autonomous planning, and official event tools."
+      description="Use your BoltCanvas account to reach the saved team workspace, robot configuration, autonomous planning, and official event tools."
       prompt={
         databaseUnavailable ? (
-          <p role="alert">PitRelay is temporarily unavailable. Please try again shortly.</p>
+          <p role="alert">BoltCanvas is temporarily unavailable. Please try again shortly.</p>
         ) : (
           <p>Need an account? <Link href={`/register?callbackUrl=${encodeURIComponent(callbackUrl)}`}>Create one</Link>.</p>
         )

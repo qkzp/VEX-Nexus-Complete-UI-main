@@ -52,7 +52,7 @@ export function AuthRouteLoading() {
           <LoadingSkeleton className="is-submit" />
         </div>
       </section>
-      <span className="sr-only">Loading PitRelay account access.</span>
+      <span className="sr-only">Loading BoltCanvas account access.</span>
     </main>
   );
 }

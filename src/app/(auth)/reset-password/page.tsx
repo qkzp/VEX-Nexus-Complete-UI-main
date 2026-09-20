@@ -4,7 +4,7 @@ import { AuthShell } from "@/components/auth/auth-shell";
 import { ResetPasswordForm } from "@/components/auth/account-forms";
 
 export const metadata: Metadata = {
-  title: "Choose New Password | PitRelay",
+  title: "Choose New Password | BoltCanvas",
 };
 
 type Params = Promise<{ token?: string | string[] }>;
@@ -16,7 +16,7 @@ export default async function ResetPasswordPage({ searchParams }: { searchParams
     <AuthShell
       eyebrow="Password recovery"
       title="Choose a new password."
-      description="Finish the reset flow from your email link, then sign back into your PitRelay account."
+      description="Finish the reset flow from your email link, then sign back into your BoltCanvas account."
       prompt={<p>Need a new reset link? <Link href="/forgot-password">Generate one</Link>.</p>}
     >
       <ResetPasswordForm token={one(params.token)} />

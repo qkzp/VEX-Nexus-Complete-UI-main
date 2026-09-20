@@ -24,7 +24,7 @@ export function RulesCenter() {
           </div>
           <p className="page-kicker">Rules Center</p>
           <h1>Official rules first.</h1>
-          <p>Search concise summaries, then jump directly to the controlling VEX source. PitRelay explanations are always labeled as summaries.</p>
+          <p>Search concise summaries, then jump directly to the controlling VEX source. BoltCanvas explanations are always labeled as summaries.</p>
         </div>
         <div className="rules-status-card">
           <span>ACTIVE MANUAL</span>
@@ -50,7 +50,7 @@ export function RulesCenter() {
             <article className="rule-result" key={topic.id}>
               <div className="rule-result-icon"><BookOpenText size={18} /></div>
               <div>
-                <div className="rule-result-title"><h3>{topic.title}</h3><span>PITRELAY SUMMARY</span></div>
+                <div className="rule-result-title"><h3>{topic.title}</h3><span>BOLTCANVAS SUMMARY</span></div>
                 <p>{topic.summary}</p>
                 <a href={topic.source} target="_blank" rel="noreferrer"><CheckCircle2 size={13} /> {topic.sourceLabel} <ArrowUpRight size={12} /></a>
               </div>

@@ -6,7 +6,7 @@ import { AuthShell } from "@/components/auth/auth-shell";
 import { LoginForm } from "@/components/auth/account-forms";
 
 export const metadata: Metadata = {
-  title: "Sign In | PitRelay",
+  title: "Sign In | BoltCanvas",
 };
 
 type Params = Promise<{
@@ -30,10 +30,10 @@ export default async function LoginPage({ searchParams }: { searchParams: Params
     <AuthShell
       eyebrow="Account access"
       title="Sign in"
-      description="Open the shared engineering workspace attached to your PitRelay account."
+      description="Open the shared engineering workspace attached to your BoltCanvas account."
       prompt={
         databaseUnavailable ? (
-          <p role="alert">PitRelay is temporarily unavailable. Please try again shortly.</p>
+          <p role="alert">BoltCanvas is temporarily unavailable. Please try again shortly.</p>
         ) : (
           <p>Need an account? <Link href={`/register?callbackUrl=${encodeURIComponent(callbackUrl)}`}>Create one</Link>.</p>
         )

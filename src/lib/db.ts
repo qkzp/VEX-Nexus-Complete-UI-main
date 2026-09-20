@@ -26,7 +26,7 @@ export function databaseIsConfigured() {
 export function requireDatabaseConfiguration() {
   if (!databaseIsConfigured()) {
     throw new Error(
-      "Database access is not configured. Set POSTGRES_PRISMA_URL or DATABASE_URL before using authenticated PitRelay features.",
+      "Database access is not configured. Set POSTGRES_PRISMA_URL or DATABASE_URL before using authenticated BoltCanvas features.",
     );
   }
 }

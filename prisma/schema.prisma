@@ -1,4 +1,4 @@
-// VEX Nexus relational core. The schema deliberately keeps mutable configuration,
+// BoltCanvas relational core. The schema deliberately keeps mutable configuration,
 // calculator, and AI payloads in JSON where product evolution is expected, while
 // preserving relational ownership, permissions, and query paths.
 

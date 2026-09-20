@@ -6,7 +6,7 @@ import { AuthShell } from "@/components/auth/auth-shell";
 import { RegisterForm } from "@/components/auth/account-forms";
 
 export const metadata: Metadata = {
-  title: "Create Account | PitRelay",
+  title: "Create Account | BoltCanvas",
 };
 
 type Params = Promise<{ callbackUrl?: string | string[] }>;
@@ -25,7 +25,7 @@ export default async function RegisterPage({ searchParams }: { searchParams: Par
     <AuthShell
       eyebrow="Create account"
       title="Build your team identity."
-      description="Create a real PitRelay account so your team membership, robots, routes, and planning history stay attached to you."
+      description="Create a real BoltCanvas account so your team membership, robots, routes, and planning history stay attached to you."
       prompt={<p>Already have one? <Link href={`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`}>Sign in</Link>.</p>}
     >
       <RegisterForm callbackUrl={callbackUrl} />
