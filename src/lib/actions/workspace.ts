@@ -17,6 +17,7 @@ export type WorkspaceActionState = {
   error?: string;
   success?: string;
   entityId?: string;
+  notebookDraftId?: string;
 };
 
 const teamIdSchema = z.string().trim().min(1).max(64);
@@ -29,6 +30,9 @@ function revalidateWorkspace(teamId?: string | null) {
   revalidatePath("/team/tasks");
   revalidatePath("/notebook");
   revalidatePath("/build-log");
+  revalidatePath("/testing");
+  revalidatePath("/field-lab");
+  revalidatePath("/events");
   if (teamId) revalidatePath("/team?team=" + encodeURIComponent(teamId));
 }
 
@@ -506,8 +510,155 @@ export async function updateTaskStatusAction(
   }
 }
 
+const testRunTypes = ["DRIVETRAIN", "AUTONOMOUS", "MECHANISM", "OTHER"] as const;
+const createTestRunSchema = z.object({
+  teamId: teamIdSchema,
+  robotId: z.string().trim().min(1).max(64),
+  taskId: optionalText(64),
+  configurationVersion: z.coerce.number().int().min(0).max(10_000),
+  type: z.enum(testRunTypes),
+  name: z.string().trim().min(2, "Name the test or route.").max(180),
+  durationSeconds: z.coerce.number().positive().max(86_400).nullable(),
+  score: z.coerce.number().finite().min(-1_000_000).max(1_000_000).nullable(),
+  passed: z.enum(["pass", "fail"]).transform((value) => value === "pass"),
+  notes: optionalText(4_000),
+  createEvidence: z.boolean(),
+  completeTask: z.boolean(),
+});
+
+function nullableDecimal(value: FormDataEntryValue | null) {
+  if (typeof value !== "string" || !value.trim()) return null;
+  return value;
+}
+
+function testRunDescription(data: z.infer<typeof createTestRunSchema>) {
+  const kind = data.type.toLowerCase().replaceAll("_", " ");
+  const facts = [
+    `Test type: ${kind}.`,
+    `Recorded result: ${data.passed ? "passed" : "failed"}.`,
+    data.durationSeconds === null ? null : `Recorded duration: ${data.durationSeconds} seconds.`,
+    data.score === null ? null : `Recorded score: ${data.score}.`,
+    data.notes ? `Observation: ${data.notes}` : null,
+  ].filter((value): value is string => Boolean(value));
+  return facts.join(" ");
+}
+
+export async function createTestRunAction(
+  _: WorkspaceActionState,
+  formData: FormData,
+): Promise<WorkspaceActionState> {
+  const parsed = createTestRunSchema.safeParse({
+    teamId: formData.get("teamId"),
+    robotId: formData.get("robotId"),
+    taskId: formData.get("taskId"),
+    configurationVersion: formData.get("configurationVersion"),
+    type: formData.get("type"),
+    name: formData.get("name"),
+    durationSeconds: nullableDecimal(formData.get("durationSeconds")),
+    score: nullableDecimal(formData.get("score")),
+    passed: formData.get("passed"),
+    notes: formData.get("notes"),
+    createEvidence: formData.get("createEvidence") === "on",
+    completeTask: formData.get("completeTask") === "on",
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Check the test details." };
+  if (parsed.data.completeTask && !parsed.data.taskId) return { error: "Choose a task before marking it complete." };
+
+  try {
+    const user = await requireCurrentUser("/testing");
+    await requireWorkspaceTeam(user.id, parsed.data.teamId, "MEMBER");
+    const robot = await prisma.robot.findFirst({
+      where: { id: parsed.data.robotId, teamId: parsed.data.teamId },
+      select: { id: true, name: true, configuration: { select: { configurationVersion: true } } },
+    });
+    if (!robot) return { error: "Choose a robot that belongs to this team." };
+    const currentConfigurationVersion = robot.configuration?.configurationVersion ?? 0;
+    if (parsed.data.configurationVersion !== currentConfigurationVersion) {
+      return { error: "This robot configuration changed. Refresh the testing page before recording this result." };
+    }
+
+    if (parsed.data.taskId) {
+      const task = await prisma.task.findFirst({
+        where: { id: parsed.data.taskId, teamId: parsed.data.teamId },
+        select: { id: true, robotId: true },
+      });
+      if (!task) return { error: "Choose a current task from this team." };
+      if (task.robotId && task.robotId !== robot.id) return { error: "Choose a task for this robot or a team-wide task." };
+    }
+
+    const result = await prisma.$transaction(async (tx) => {
+      const testRun = await tx.testRun.create({
+        data: {
+          teamId: parsed.data.teamId,
+          robotId: robot.id,
+          taskId: parsed.data.taskId,
+          createdById: user.id,
+          configurationVersion: currentConfigurationVersion,
+          type: parsed.data.type,
+          name: parsed.data.name,
+          durationSeconds: parsed.data.durationSeconds,
+          score: parsed.data.score,
+          passed: parsed.data.passed,
+          notes: parsed.data.notes,
+        },
+      });
+
+      if (parsed.data.createEvidence) {
+        const buildLog = await tx.buildLog.create({
+          data: {
+            teamId: parsed.data.teamId,
+            robotId: robot.id,
+            authorId: user.id,
+            occurredOn: testRun.createdAt,
+            title: `${robot.name}: ${parsed.data.name}`,
+            summary: "Test evidence recorded from the testing workspace.",
+            testing: testRunDescription(parsed.data),
+            results: `Recorded result: ${parsed.data.passed ? "passed" : "failed"}.`,
+            nextSteps: parsed.data.passed ? null : "Review the failed result before repeating the test.",
+          },
+        });
+        await tx.testRun.update({ where: { id: testRun.id }, data: { buildLogId: buildLog.id } });
+      }
+
+      if (parsed.data.completeTask && parsed.data.taskId) {
+        await tx.task.update({ where: { id: parsed.data.taskId }, data: { status: "COMPLETE" } });
+      }
+
+      await tx.auditLog.create({
+        data: {
+          actorId: user.id,
+          action: "robot.test.record",
+          targetType: "TestRun",
+          targetId: testRun.id,
+          metadata: {
+            teamId: parsed.data.teamId,
+            robotId: robot.id,
+            taskId: parsed.data.taskId,
+            type: parsed.data.type,
+            passed: parsed.data.passed,
+            evidenceCreated: parsed.data.createEvidence,
+            taskCompleted: parsed.data.completeTask,
+          },
+        },
+      });
+      return testRun;
+    });
+
+    revalidateWorkspace(parsed.data.teamId);
+    return {
+      success: `${parsed.data.name} saved${parsed.data.createEvidence ? " with a linked build-log record" : ""}${parsed.data.completeTask ? " and the selected task marked complete" : ""}.`,
+      entityId: result.id,
+      notebookDraftId: result.id,
+    };
+  } catch (error) {
+    return { error: messageForError(error, "We could not save that test run.") };
+  }
+}
+
 const createNotebookSchema = z.object({
   teamId: teamIdSchema,
+  robotId: optionalText(64),
+  testRunId: optionalText(64),
   title: z.string().trim().min(2, "Add an entry title.").max(180),
   occurredOn: z.string().trim().min(1),
   objective: optionalText(4_000),
@@ -525,6 +676,8 @@ export async function createNotebookEntryAction(
 ): Promise<WorkspaceActionState> {
   const parsed = createNotebookSchema.safeParse({
     teamId: formData.get("teamId"),
+    robotId: formData.get("robotId"),
+    testRunId: formData.get("testRunId"),
     title: formData.get("title"),
     occurredOn: formData.get("occurredOn"),
     objective: formData.get("objective"),
@@ -542,8 +695,24 @@ export async function createNotebookEntryAction(
   try {
     const user = await requireCurrentUser("/notebook");
     await requireWorkspaceTeam(user.id, parsed.data.teamId, "MEMBER");
-    const entry = await prisma.notebookEntry.create({
-      data: { ...parsed.data, occurredOn, authorId: user.id },
+    if (parsed.data.robotId) {
+      const robot = await prisma.robot.findFirst({ where: { id: parsed.data.robotId, teamId: parsed.data.teamId }, select: { id: true } });
+      if (!robot) return { error: "Choose a robot from this team." };
+    }
+    const linkedTest = parsed.data.testRunId
+      ? await prisma.testRun.findFirst({ where: { id: parsed.data.testRunId, teamId: parsed.data.teamId }, select: { id: true, robotId: true, notebookEntryId: true } })
+      : null;
+    if (parsed.data.testRunId && !linkedTest) return { error: "That test record is no longer available to this team." };
+    if (linkedTest && parsed.data.robotId && linkedTest.robotId !== parsed.data.robotId) return { error: "The notebook robot must match the linked test." };
+    if (linkedTest?.notebookEntryId) return { error: "This test already has a linked notebook entry." };
+
+    const { robotId, testRunId, ...entryData } = parsed.data;
+    const entry = await prisma.$transaction(async (tx) => {
+      const created = await tx.notebookEntry.create({
+        data: { ...entryData, robotId: robotId || linkedTest?.robotId || null, occurredOn, authorId: user.id },
+      });
+      if (testRunId) await tx.testRun.update({ where: { id: testRunId }, data: { notebookEntryId: created.id } });
+      return created;
     });
     revalidateWorkspace(parsed.data.teamId);
     return { success: "Notebook entry saved.", entityId: entry.id };
@@ -554,6 +723,7 @@ export async function createNotebookEntryAction(
 
 const createBuildLogSchema = z.object({
   teamId: teamIdSchema,
+  robotId: optionalText(64),
   title: z.string().trim().min(2, "Add a build-log title.").max(180),
   occurredOn: z.string().trim().min(1),
   summary: optionalText(8_000),
@@ -569,6 +739,7 @@ export async function createBuildLogAction(
 ): Promise<WorkspaceActionState> {
   const parsed = createBuildLogSchema.safeParse({
     teamId: formData.get("teamId"),
+    robotId: formData.get("robotId"),
     title: formData.get("title"),
     occurredOn: formData.get("occurredOn"),
     summary: formData.get("summary"),
@@ -584,6 +755,10 @@ export async function createBuildLogAction(
   try {
     const user = await requireCurrentUser("/build-log");
     await requireWorkspaceTeam(user.id, parsed.data.teamId, "MEMBER");
+    if (parsed.data.robotId) {
+      const robot = await prisma.robot.findFirst({ where: { id: parsed.data.robotId, teamId: parsed.data.teamId }, select: { id: true } });
+      if (!robot) return { error: "Choose a robot from this team." };
+    }
     const entry = await prisma.buildLog.create({
       data: { ...parsed.data, occurredOn, authorId: user.id },
     });

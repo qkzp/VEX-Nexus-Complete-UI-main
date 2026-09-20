@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { CalendarDays, ExternalLink, RefreshCw, Search, ShieldCheck } from "lucide-react";
+import { CalendarDays, CheckCircle2, ClipboardCheck, ExternalLink, FileText, RefreshCw, Search, ShieldCheck, Wrench } from "lucide-react";
 import { VEX_OVERRIDE } from "@/lib/vex-official";
 import { flushPendingTeamSection, saveTeamSection, type SyncStatus } from "@/lib/client/team-sync";
 import { InlineSpinner, LoadingSkeleton } from "@/components/ui/loading-states";
@@ -13,9 +14,44 @@ type OfficialMatch = { id: number; round?: number | null; instance?: number | nu
 type OfficialRanking = { rank?: number | null; team?: OfficialTeam | null; wins?: number | null; losses?: number | null; ties?: number | null };
 type ApiSuccess<T> = { status: "ok"; data: T; source?: { fetchedAt?: string; cache?: string } };
 type ApiFailure = { status?: string; message?: string; code?: string };
-type EventState = { selectedEvent?: OfficialEvent | null; divisionId?: number | null; queueNote?: string; strategyNote?: string; cachedMatches?: OfficialMatch[]; cachedRankings?: OfficialRanking[]; officialFetchedAt?: string | null };
+type PitChecklistId = "battery" | "brain" | "controller" | "mechanical" | "autonomous" | "tools";
+type EventState = {
+  selectedEvent?: OfficialEvent | null;
+  divisionId?: number | null;
+  queueNote?: string;
+  strategyNote?: string;
+  cachedMatches?: OfficialMatch[];
+  cachedRankings?: OfficialRanking[];
+  officialFetchedAt?: string | null;
+  pitChecklist?: Partial<Record<PitChecklistId, boolean>>;
+  postMatchResult?: string;
+  postMatchNotes?: string;
+};
+
+type PitRobotStatus = {
+  robotId: string;
+  name: string;
+  hardwareConfigured: boolean;
+  drivetrainConfigured: boolean;
+  testRuns: number;
+  successfulRuns: number;
+  failedRuns: number;
+  autonomousRoutes: number;
+  autonomousTestRuns: number;
+  successfulAutonomousRuns: number;
+  failedAutonomousRuns: number;
+  evidenceEntries: number;
+};
 
 const PUBLIC_EVENTS_URL = "https://events.vex.com/robot-competitions/vex-robotics-competition";
+const PIT_CHECKS: { id: PitChecklistId; label: string }[] = [
+  { id: "battery", label: "Battery charged and seated" },
+  { id: "brain", label: "Brain, cables, and ports checked" },
+  { id: "controller", label: "Controller connected and paired" },
+  { id: "mechanical", label: "Critical fasteners and mechanisms checked" },
+  { id: "autonomous", label: "Correct autonomous routine selected" },
+  { id: "tools", label: "Pit tools and spare parts packed" },
+];
 
 function safeOfficialMessage(message: string) {
   return message.includes("VEX_EVENTS_")
@@ -43,6 +79,25 @@ function teamNumbers(match: OfficialMatch, color: string) {
   return match.alliances?.find((alliance) => alliance.color?.toLowerCase() === color)?.teams?.map((row) => row.team?.number).filter((value): value is string => Boolean(value)) ?? [];
 }
 
+function teamHref(path: string, teamId: string) {
+  const url = new URL(path, "http://localhost");
+  url.searchParams.set("team", teamId);
+  return `${url.pathname}?${url.searchParams.toString()}`;
+}
+
+function testSummary(robot: PitRobotStatus) {
+  if (!robot.testRuns) return "No current-revision tests recorded";
+  const passRate = Math.round((robot.successfulRuns / robot.testRuns) * 100);
+  return `${robot.successfulRuns}/${robot.testRuns} passed (${passRate}%)${robot.failedRuns ? `, ${robot.failedRuns} failed` : ""}`;
+}
+
+function autonomousSummary(robot: PitRobotStatus) {
+  if (!robot.autonomousRoutes) return "No saved autonomous route";
+  if (!robot.autonomousTestRuns) return `${robot.autonomousRoutes} saved route${robot.autonomousRoutes === 1 ? "" : "s"}; no matching tests`;
+  const passRate = Math.round((robot.successfulAutonomousRuns / robot.autonomousTestRuns) * 100);
+  return `${robot.successfulAutonomousRuns}/${robot.autonomousTestRuns} passed (${passRate}%)`;
+}
+
 type EventModeProps = {
   teamId: string;
   teamNumber: string;
@@ -50,6 +105,7 @@ type EventModeProps = {
   selectedEventId: number | null;
   officialConfigured: boolean;
   officialMessage: string;
+  robotHealth: PitRobotStatus[];
 };
 
 export function EventMode({
@@ -59,6 +115,7 @@ export function EventMode({
   selectedEventId,
   officialConfigured,
   officialMessage,
+  robotHealth,
 }: EventModeProps) {
   const parsed = initialState as EventState;
   const [state, setState] = useState<EventState>({
@@ -69,6 +126,9 @@ export function EventMode({
     cachedMatches: Array.isArray(parsed.cachedMatches) ? parsed.cachedMatches : [],
     cachedRankings: Array.isArray(parsed.cachedRankings) ? parsed.cachedRankings : [],
     officialFetchedAt: parsed.officialFetchedAt ?? null,
+    pitChecklist: parsed.pitChecklist && typeof parsed.pitChecklist === "object" ? parsed.pitChecklist : {},
+    postMatchResult: parsed.postMatchResult ?? "",
+    postMatchNotes: parsed.postMatchNotes ?? "",
   });
   const [sync, setSync] = useState<SyncStatus>("saved");
   const [region, setRegion] = useState("");
@@ -96,6 +156,13 @@ export function EventMode({
       }).catch(() => undefined);
     }
     await save;
+  }
+
+  function togglePitChecklist(id: PitChecklistId) {
+    void persist({
+      ...state,
+      pitChecklist: { ...state.pitChecklist, [id]: !state.pitChecklist?.[id] },
+    });
   }
 
   async function searchEvents() {
@@ -260,7 +327,7 @@ export function EventMode({
                 <h2>{selected.name || selected.sku || `Event ${selected.id}`}</h2>
                 <p>{dateTime(selected.start)} · {eventPlace(selected)}</p>
               </div>
-              <button className="button button-quiet" type="button" onClick={() => void persist({ queueNote: state.queueNote, strategyNote: state.strategyNote, selectedEvent: null, divisionId: null, cachedMatches: [], cachedRankings: [], officialFetchedAt: null }, null)}>
+              <button className="button button-quiet" type="button" onClick={() => void persist({ ...state, selectedEvent: null, divisionId: null, cachedMatches: [], cachedRankings: [], officialFetchedAt: null }, null)}>
                 Change event
               </button>
             </div>
@@ -318,6 +385,68 @@ export function EventMode({
               ) : (
                 <p>VEX Events has not returned a ranking row for {teamNumber || "this team"}. No rank is inferred locally.</p>
               )}
+            </section>
+          </div>
+
+          <div className="event-pit-grid">
+            <section className="suite-panel event-pit-robot-panel">
+              <div className="suite-panel-heading">
+                <div>
+                  <span className="section-overline">Pit status</span>
+                  <h2>Robot readiness</h2>
+                </div>
+                <Wrench size={18} />
+              </div>
+              {robotHealth.length ? <div className="pit-robot-list">
+                {robotHealth.map((robot) => <article key={robot.robotId} className="pit-robot-row">
+                  <div>
+                    <strong>{robot.name}</strong>
+                    <span className={robot.hardwareConfigured && !robot.failedRuns ? "status-chip good" : "status-chip warn"}>{robot.hardwareConfigured ? robot.failedRuns ? "Tests need review" : "Hardware configured" : "Hardware setup incomplete"}</span>
+                  </div>
+                  <dl>
+                    <div><dt>Current tests</dt><dd>{testSummary(robot)}</dd></div>
+                    <div><dt>Autonomous</dt><dd>{autonomousSummary(robot)}</dd></div>
+                    <div><dt>Evidence</dt><dd>{robot.evidenceEntries ? `${robot.evidenceEntries} linked record${robot.evidenceEntries === 1 ? "" : "s"}` : "No robot-linked evidence"}</dd></div>
+                  </dl>
+                  <div className="pit-robot-actions">
+                    <Link href={teamHref(`/robots/${robot.robotId}`, teamId)}>Robot status</Link>
+                    <Link href={teamHref("/testing", teamId)}>Record test</Link>
+                  </div>
+                </article>)}
+              </div> : <div className="suite-empty">Create a robot profile before the team can use a pit readiness check.</div>}
+            </section>
+
+            <section className="suite-panel event-pit-checklist-panel">
+              <div className="suite-panel-heading">
+                <div>
+                  <span className="section-overline">Pre-match</span>
+                  <h2>Pit checklist</h2>
+                </div>
+                <ClipboardCheck size={18} />
+              </div>
+              <p className="form-helper">{nextMatch ? `${matchLabel(nextMatch)} is the next returned match. Confirm each physical item before queuing.` : "No next match is available from the official schedule yet. Use this checklist when the team is preparing to queue."}</p>
+              <div className="pit-checklist">
+                {PIT_CHECKS.map((item) => <label key={item.id} className={state.pitChecklist?.[item.id] ? "is-complete" : ""}>
+                  <input type="checkbox" checked={Boolean(state.pitChecklist?.[item.id])} onChange={() => togglePitChecklist(item.id)} />
+                  <span>{state.pitChecklist?.[item.id] ? <CheckCircle2 size={16} /> : <span className="pit-check-circle" />}{item.label}</span>
+                </label>)}
+              </div>
+            </section>
+
+            <section className="suite-panel event-post-match-panel">
+              <div className="suite-panel-heading">
+                <div>
+                  <span className="section-overline">Post-match</span>
+                  <h2>Capture what happened</h2>
+                </div>
+                <FileText size={18} />
+              </div>
+              <label>Match result or observation<textarea value={state.postMatchResult ?? ""} onChange={(event) => setState({ ...state, postMatchResult: event.target.value })} onBlur={() => void persist(state)} placeholder="Record only facts the team observed or received." /></label>
+              <label>Repair or follow-up notes<textarea value={state.postMatchNotes ?? ""} onChange={(event) => setState({ ...state, postMatchNotes: event.target.value })} onBlur={() => void persist(state)} placeholder="Capture a repair, retry, or evidence follow-up while it is fresh." /></label>
+              <div className="pit-follow-up-actions">
+                <Link className="button button-quiet" href={teamHref("/team/tasks", teamId)}><Wrench size={14} /> Create repair task</Link>
+                <Link className="button button-quiet" href={teamHref("/build-log", teamId)}><FileText size={14} /> Add engineering evidence</Link>
+              </div>
             </section>
           </div>
 

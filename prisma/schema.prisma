@@ -315,6 +315,13 @@ enum TaskPriority {
   CRITICAL
 }
 
+enum TestRunType {
+  DRIVETRAIN
+  AUTONOMOUS
+  MECHANISM
+  OTHER
+}
+
 enum CompetitionStatus {
   PLANNED
   ACTIVE
@@ -505,6 +512,7 @@ model User {
   calculations            Calculation[]      @relation("CalculationOwner")
   buildLogs               BuildLog[]         @relation("BuildLogAuthor")
   notebookEntries         NotebookEntry[]    @relation("NotebookEntryAuthor")
+  testRuns                TestRun[]          @relation("TestRunAuthor")
   createdTasks            Task[]             @relation("TaskCreator")
   taskAssignments         TaskAssignee[]
   taskComments            TaskComment[]
@@ -628,6 +636,7 @@ model Team {
   calculations      Calculation[]
   buildLogs         BuildLog[]
   notebookEntries   NotebookEntry[]
+  testRuns          TestRun[]
   tasks             Task[]
   competitions      Competition[]
   scoutingTemplates ScoutingTemplate[]
@@ -778,6 +787,7 @@ model Robot {
   calculations        Calculation[]
   buildLogs           BuildLog[]
   notebookEntries     NotebookEntry[]
+  testRuns            TestRun[]
   tasks               Task[]
   forumThreads        ForumThread[]
   mediaAssets         MediaAsset[]
@@ -1194,6 +1204,7 @@ model BuildLog {
   team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
   robot  Robot? @relation(fields: [robotId], references: [id], onDelete: SetNull)
   author User   @relation("BuildLogAuthor", fields: [authorId], references: [id], onDelete: Restrict)
+  testRuns TestRun[]
 
   @@index([teamId, occurredOn])
   @@index([robotId, occurredOn])
@@ -1224,9 +1235,40 @@ model NotebookEntry {
   team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
   robot  Robot? @relation(fields: [robotId], references: [id], onDelete: SetNull)
   author User   @relation("NotebookEntryAuthor", fields: [authorId], references: [id], onDelete: Restrict)
+  testRuns TestRun[]
 
   @@index([teamId, occurredOn])
   @@index([robotId, occurredOn])
+}
+
+model TestRun {
+  id                   String      @id @default(cuid())
+  teamId               String
+  robotId              String
+  taskId               String?
+  buildLogId           String?
+  notebookEntryId      String?
+  createdById          String
+  configurationVersion Int         @default(0)
+  type                 TestRunType
+  name                 String
+  durationSeconds      Float?
+  score                Float?
+  passed               Boolean
+  notes                String?     @db.Text
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+
+  team          Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  robot         Robot          @relation(fields: [robotId], references: [id], onDelete: Cascade)
+  task          Task?          @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  buildLog      BuildLog?      @relation(fields: [buildLogId], references: [id], onDelete: SetNull)
+  notebookEntry NotebookEntry? @relation(fields: [notebookEntryId], references: [id], onDelete: SetNull)
+  createdBy     User           @relation("TestRunAuthor", fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@index([teamId, createdAt])
+  @@index([robotId, configurationVersion, createdAt])
+  @@index([taskId, createdAt])
 }
 
 model Task {
@@ -1248,6 +1290,7 @@ model Task {
   createdBy   User           @relation("TaskCreator", fields: [createdById], references: [id], onDelete: Restrict)
   assignees   TaskAssignee[]
   comments    TaskComment[]
+  testRuns    TestRun[]
 
   @@index([teamId, status, position])
   @@index([robotId, status])

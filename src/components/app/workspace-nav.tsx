@@ -21,27 +21,27 @@ import {
 import { LinkPendingIndicator } from "@/components/ui/link-pending-indicator";
 
 const groups = [
-  { label: "", items: [{ href: "/app/dashboard", label: "Command center", icon: LayoutDashboard }] },
-  { label: "BUILD", items: [
-    { href: "/robots", label: "Robots", icon: Bot },
-    { href: "/calculators", label: "Calculators", icon: Calculator },
-    { href: "/testing", label: "Testing", icon: Activity },
+  { label: "TEAM", items: [
+    { href: "/app/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/team/tasks", label: "Tasks", icon: ClipboardCheck },
+    { href: "/team", label: "Team settings", icon: UsersRound },
+    { href: "/forum", label: "Team forum", icon: MessageSquareText },
   ]},
-  { label: "CODE", items: [
-    { href: "/code", label: "Code Lab", icon: Braces },
+  { label: "ROBOT", items: [
+    { href: "/robots", label: "Robots", icon: Bot },
+    { href: "/testing", label: "Testing", icon: Activity },
     { href: "/field-lab", label: "Autonomous", icon: Crosshair },
+    { href: "/code", label: "Code Lab", icon: Braces },
+  ]},
+  { label: "TOOLS", items: [
+    { href: "/calculators", label: "Calculators", icon: Calculator },
+    { href: "/notebook", label: "Engineering notebook", icon: BookOpenText },
   ]},
   { label: "COMPETE", items: [
     { href: "/events", label: "Event Mode", icon: CalendarDays },
-    { href: "/strategy", label: "Scouting & Strategy", icon: Scale },
+    { href: "/strategy", label: "Scouting & strategy", icon: Scale },
     { href: "/rules", label: "Rules", icon: ShieldCheck },
     { href: "/rankings", label: "World Skills", icon: Trophy },
-  ]},
-  { label: "TEAM", items: [
-    { href: "/team/tasks", label: "Team tasks", icon: ClipboardCheck },
-    { href: "/notebook", label: "Notebook", icon: BookOpenText },
-    { href: "/forum", label: "Community Forum", icon: MessageSquareText },
-    { href: "/team", label: "Members & Invites", icon: UsersRound },
   ]},
 ] as const;
 

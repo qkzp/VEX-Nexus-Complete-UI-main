@@ -118,22 +118,46 @@ export function CreateTaskForm({ teamId, members, robots }: { teamId: string; me
 
 const today = () => new Date().toISOString().slice(0, 10);
 
-export function NotebookEntryForm({ teamId }: { teamId: string }) {
+export type NotebookEntryDraft = {
+  testRunId?: string;
+  robotId?: string;
+  title?: string;
+  occurredOn?: string;
+  objective?: string;
+  problem?: string;
+  research?: string;
+  decision?: string;
+  testing?: string;
+  results?: string;
+  nextSteps?: string;
+};
+
+export function NotebookEntryForm({ teamId, draft }: { teamId: string; draft?: NotebookEntryDraft }) {
   const router = useRouter();
   const [state, formAction, pending] = useActionState(createNotebookEntryAction, initialState);
   const formRef = useFormErrorFocus(state.error);
-  useEffect(() => { if (state.success) { formRef.current?.reset(); router.refresh(); } }, [formRef, router, state.success]);
+  useEffect(() => {
+    if (!state.success) return;
+    formRef.current?.reset();
+    if (draft?.testRunId) {
+      router.replace(`/notebook?team=${encodeURIComponent(teamId)}`);
+      return;
+    }
+    router.refresh();
+  }, [draft?.testRunId, formRef, router, state.success, teamId]);
   return <form ref={formRef} action={formAction} className="structured-form document-form" aria-busy={pending}>
     <input type="hidden" name="teamId" value={teamId} />
-    <label>Entry title<input name="title" required maxLength={180} placeholder="What did the team work on?" /></label>
-    <label>Date<input name="occurredOn" type="date" required defaultValue={today()} /></label>
-    <label className="field-wide">Objective<textarea name="objective" rows={2} maxLength={4000} placeholder="State the intended outcome using team-provided facts." /></label>
-    <label>Problem or constraint<textarea name="problem" rows={3} maxLength={4000} /></label>
-    <label>Research<textarea name="research" rows={3} maxLength={8000} /></label>
-    <label>Decision<textarea name="decision" rows={3} maxLength={4000} /></label>
-    <label>Testing performed<textarea name="testing" rows={3} maxLength={4000} /></label>
-    <label>Results<textarea name="results" rows={3} maxLength={4000} /></label>
-    <label>Next steps<textarea name="nextSteps" rows={3} maxLength={4000} /></label>
+    <input type="hidden" name="robotId" value={draft?.robotId ?? ""} />
+    <input type="hidden" name="testRunId" value={draft?.testRunId ?? ""} />
+    <label>Entry title<input name="title" required maxLength={180} defaultValue={draft?.title} placeholder="What did the team work on?" /></label>
+    <label>Date<input name="occurredOn" type="date" required defaultValue={draft?.occurredOn ?? today()} /></label>
+    <label className="field-wide">Objective<textarea name="objective" rows={2} maxLength={4000} defaultValue={draft?.objective} placeholder="State the intended outcome using team-provided facts." /></label>
+    <label>Problem or constraint<textarea name="problem" rows={3} maxLength={4000} defaultValue={draft?.problem} /></label>
+    <label>Research<textarea name="research" rows={3} maxLength={8000} defaultValue={draft?.research} /></label>
+    <label>Decision<textarea name="decision" rows={3} maxLength={4000} defaultValue={draft?.decision} /></label>
+    <label>Testing performed<textarea name="testing" rows={3} maxLength={4000} defaultValue={draft?.testing} /></label>
+    <label>Results<textarea name="results" rows={3} maxLength={4000} defaultValue={draft?.results} /></label>
+    <label>Next steps<textarea name="nextSteps" rows={3} maxLength={4000} defaultValue={draft?.nextSteps} /></label>
     <FormMessage state={state} />
     <button className="button button-primary" type="submit" disabled={pending}>{pending ? <InlineSpinner /> : <Save size={16} />}{pending ? "Saving…" : "Save notebook entry"}</button>
   </form>;

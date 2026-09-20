@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
-import { CalendarDays, ChevronRight, Crosshair, LockKeyhole, Plus, UsersRound } from "lucide-react";
+import { ChevronRight, LockKeyhole, Plus, UsersRound } from "lucide-react";
 import { signOutAction } from "@/lib/actions/session";
 import { setActiveTeamAction } from "@/lib/actions/workspace";
 import type { WorkspaceTeam } from "@/lib/workspace/data";
@@ -58,8 +58,6 @@ export function WorkspaceShell({ teams, activeTeamId, currentUser, children }: W
   const searchHref = withTeam("/search", currentTeamId);
   const tasksHref = withTeam("/team/tasks", currentTeamId);
   const teamHref = withTeam("/team", currentTeamId);
-  const fieldLabHref = withTeam("/field-lab", currentTeamId);
-  const eventsHref = withTeam("/events", currentTeamId);
   const avatarInitials = initialsFor(currentUser.name, currentUser.email);
 
   useEffect(() => {
@@ -148,27 +146,6 @@ export function WorkspaceShell({ teams, activeTeamId, currentUser, children }: W
         </div>
 
         <WorkspaceNav />
-
-        <section className="workspace-quick-actions" aria-label="Quick actions">
-          <span className="workspace-overline">Quick launch</span>
-          <div className="workspace-quick-action-grid">
-            <Link href={createRobotHref} className="workspace-quick-action-card">
-              <Plus aria-hidden="true" size={16} />
-              <strong>Add robot</strong>
-              <small>Create a saved robot profile for this team.</small>
-            </Link>
-            <Link href={fieldLabHref} className="workspace-quick-action-card">
-              <Crosshair aria-hidden="true" size={16} />
-              <strong>Plan auton</strong>
-              <small>Open the real field route planner and code output.</small>
-            </Link>
-            <Link href={eventsHref} className="workspace-quick-action-card">
-              <CalendarDays aria-hidden="true" size={16} />
-              <strong>Event mode</strong>
-              <small>Review competition context and official event data.</small>
-            </Link>
-          </div>
-        </section>
 
         <div className="workspace-sidebar-footer">
           <Link href={createRobotHref} className="workspace-create-link">
