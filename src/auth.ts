@@ -42,6 +42,8 @@ function resolveAuthSecret() {
   const configuredSecret = process.env.AUTH_SECRET?.trim() || process.env.NEXTAUTH_SECRET?.trim();
   if (configuredSecret) return configuredSecret;
 
+  if (process.env.NEXT_PHASE === "phase-production-build") return "build-time-auth-secret-placeholder";
+
   throw new Error("AUTH_SECRET (or NEXTAUTH_SECRET) must be configured before authentication can start.");
 }
 
