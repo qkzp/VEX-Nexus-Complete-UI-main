@@ -1,0 +1,36 @@
+PITRELAY — LOCAL DEV DEMO
+===========================
+
+This build intentionally has NO email/password account system.
+It uses a local DEV key gate for testing.
+
+1. Start Docker Desktop.
+2. Open this extracted folder in VS Code.
+3. In the terminal run:
+
+   npm install
+   npm run local
+
+4. Open http://localhost:3000
+5. Enter this local demo key:
+
+   VEX-NEXUS-DEV-2026
+
+The key is configured in .env as DEV_ACCESS_KEY. Change it there if you want.
+
+On the FIRST launch of this package, npm run local also clears old account/team/test
+data left in the existing local database from previous VEX Nexus builds. Later launches
+preserve the demo data you create until you explicitly reset it.
+
+FRESH DEMO / RESET
+------------------
+Inside the workspace, use the reset icon next to DEV MODE, or open:
+
+   http://localhost:3000/dev-reset
+
+Re-enter the DEV key and choose "Erase all demo workspace data". This wipes test
+users, teams, robots, scouting, testing, tasks, notebook links, code projects,
+and other database records. You will then return to the DEV key screen.
+
+The reset is for local/demo testing. Do not enable ALLOW_DEV_RESET on a real
+production deployment.

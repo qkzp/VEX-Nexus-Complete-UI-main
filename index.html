@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PitRelay</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;background:radial-gradient(circle at 50% 0,#172336 0,#09111c 36%,#050a11 100%);color:#edf4fb;display:grid;place-items:center;min-height:100vh;padding:24px}.card{width:min(660px,100%);background:rgba(11,23,37,.94);border:1px solid #26394d;border-radius:26px;padding:34px;box-shadow:0 28px 80px rgba(0,0,0,.35)}.brand{display:flex;align-items:center;gap:16px}.brand img{width:66px;height:52px;object-fit:contain;filter:drop-shadow(0 8px 20px rgba(238,47,58,.24))}.brand h1{margin:0;font-size:28px;letter-spacing:-.04em}.muted{color:#9fb2c5}.status{display:flex;gap:10px;align-items:center;margin:24px 0 0;padding:14px 16px;background:#101f30;border:1px solid #253b50;border-radius:14px}.dot{width:10px;height:10px;border-radius:999px;background:#ef3945;box-shadow:0 0 18px rgba(239,57,69,.7)}.cmd{background:#04090f;border:1px solid #223243;border-radius:14px;padding:17px;font:600 15px ui-monospace,SFMono-Regular,Consolas,monospace;margin:16px 0;line-height:1.65}.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}a,button{color:white;background:#ef343f;border:0;border-radius:12px;padding:12px 17px;font-weight:800;text-decoration:none;cursor:pointer}.secondary{background:#17283a;border:1px solid #2a4157}code{color:#fff}.small{font-size:13px;line-height:1.55}.eyebrow{font:800 10px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.16em;color:#ff7078;text-transform:uppercase;margin:22px 0 7px}
+</style>
+</head>
+<body><main class="card">
+<div class="brand"><img src="public/pitrelay-mark.svg" alt="PitRelay logo"><div><h1>PitRelay</h1><div class="muted">Build · Code · Compete</div></div></div>
+<div class="status"><span class="dot"></span><span>This file is a launcher guide. The real multi-user application runs at <strong>localhost:3000</strong>.</span></div>
+<p class="eyebrow">First start</p><p>Open this extracted folder in VS Code, make sure Docker Desktop is running, then run:</p>
+<div class="cmd">npm install<br>npm run local</div>
+<p class="muted small">The second command starts PostgreSQL, updates Prisma to the included schema, and launches the Next.js site. Keep the terminal open while using PitRelay.</p>
+<div class="row"><a href="http://localhost:3000">Open PitRelay</a><button class="secondary" onclick="location.reload()">Retry</button></div>
+</main></body></html>

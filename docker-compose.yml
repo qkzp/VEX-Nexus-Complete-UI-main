@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vexcoder
+      POSTGRES_PASSWORD: vexcoder_local
+      POSTGRES_DB: vexcoder
+    ports:
+      - "5432:5432"
+    volumes:
+      - vexcoder_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vexcoder -d vexcoder"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+volumes:
+  vexcoder_pgdata:

@@ -1,0 +1,77 @@
+<svg width="640" height="420" viewBox="0 0 640 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="420" rx="36" fill="#F5F7FB"/>
+  <g filter="url(#shadow)">
+    <path d="M183 101C217 85 270 76 320 76C370 76 423 85 457 101C493 118 514 147 522 182L540 259C547 288 536 318 511 337C489 354 457 361 430 352L388 337C362 328 334 323 320 323C306 323 278 328 252 337L210 352C183 361 151 354 129 337C104 318 93 288 100 259L118 182C126 147 147 118 183 101Z" fill="url(#body)"/>
+    <path d="M188 115C219 101 269 92 320 92C371 92 421 101 452 115C483 130 502 154 509 183L524 251C530 274 521 300 501 315C482 330 454 335 431 327L386 312C355 302 334 298 320 298C306 298 285 302 254 312L209 327C186 335 158 330 139 315C119 300 110 274 116 251L131 183C138 154 157 130 188 115Z" stroke="#5A6068" stroke-width="7"/>
+  </g>
+
+  <rect x="255" y="113" width="130" height="84" rx="12" fill="#BFC6CF" stroke="#575D65" stroke-width="6"/>
+  <rect x="270" y="128" width="100" height="54" rx="7" fill="#8993A1"/>
+  <circle cx="189" cy="176" r="42" fill="#1D2228" stroke="#50565F" stroke-width="8"/>
+  <circle cx="451" cy="176" r="42" fill="#1D2228" stroke="#50565F" stroke-width="8"/>
+  <circle cx="177" cy="164" r="19" fill="#2F343A"/>
+  <circle cx="439" cy="164" r="19" fill="#2F343A"/>
+
+  <g fill="#20252B">
+    <circle cx="229" cy="221" r="16"/>
+    <circle cx="200" cy="249" r="16"/>
+    <circle cx="229" cy="277" r="16"/>
+    <circle cx="258" cy="249" r="16"/>
+  </g>
+  <g fill="#F7FAFF">
+    <path d="M229 213L234 223H224L229 213Z"/>
+    <path d="M192 249L202 244V254L192 249Z"/>
+    <path d="M229 285L224 275H234L229 285Z"/>
+    <path d="M266 249L256 254V244L266 249Z"/>
+  </g>
+
+  <g fill="#20252B">
+    <circle cx="398" cy="224" r="16"/>
+    <circle cx="440" cy="210" r="16"/>
+    <circle cx="455" cy="251" r="16"/>
+    <circle cx="414" cy="266" r="16"/>
+  </g>
+  <g fill="#F7FAFF" font-family="Arial, sans-serif" font-size="14" font-weight="700" text-anchor="middle">
+    <text x="398" y="229">Y</text>
+    <text x="440" y="215">X</text>
+    <text x="455" y="256">A</text>
+    <text x="414" y="271">B</text>
+  </g>
+
+  <rect x="292" y="229" width="56" height="38" rx="10" fill="#15191D" stroke="#4B5058" stroke-width="5"/>
+  <path d="M320 238L320 257M310 247H330" stroke="#F7FAFF" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="274" cy="251" r="12" fill="#111417"/>
+  <circle cx="366" cy="251" r="12" fill="#111417"/>
+
+  <g stroke="#575D65" stroke-width="9" stroke-linecap="round">
+    <path d="M185 109L220 96"/>
+    <path d="M455 109L420 96"/>
+  </g>
+
+  <g fill="#D9E1ED" font-family="Arial, sans-serif" font-size="11" font-weight="700">
+    <text x="147" y="150">L1</text>
+    <text x="163" y="141">L2</text>
+    <text x="478" y="150">R1</text>
+    <text x="462" y="141">R2</text>
+  </g>
+
+  <path d="M320 243C326 243 331 248 331 254C331 260 326 265 320 265C314 265 309 260 309 254C309 248 314 243 320 243Z" fill="#D93838"/>
+  <path d="M315 251L320 258L325 251" stroke="#0F141A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <defs>
+    <linearGradient id="body" x1="320" y1="76" x2="320" y2="357" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#757D87"/>
+      <stop offset="0.48" stop-color="#555B63"/>
+      <stop offset="1" stop-color="#2C3036"/>
+    </linearGradient>
+    <filter id="shadow" x="72" y="56" width="496" height="329" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="10"/>
+      <feGaussianBlur stdDeviation="14"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.06 0 0 0 0 0.09 0 0 0 0 0.14 0 0 0 0.24 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+    </filter>
+  </defs>
+</svg>

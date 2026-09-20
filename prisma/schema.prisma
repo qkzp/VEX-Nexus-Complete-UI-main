@@ -1,0 +1,1797 @@
+// VEX Nexus relational core. The schema deliberately keeps mutable configuration,
+// calculator, and AI payloads in JSON where product evolution is expected, while
+// preserving relational ownership, permissions, and query paths.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+enum SystemRole {
+  MEMBER
+  MODERATOR
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DEACTIVATED
+}
+
+enum ExperienceLevel {
+  JUST_STARTING
+  FIRST_SEASON
+  ONE_TO_TWO_SEASONS
+  THREE_PLUS_SEASONS
+  MENTOR_COACH
+}
+
+enum ProgrammingLanguage {
+  VEXCODE_PYTHON
+  VEXCODE_CPP
+  PROS_CPP
+  OTHER
+}
+
+enum TeamPermissionRole {
+  OWNER
+  ADMIN
+  TEAM_LEAD
+  MEMBER
+  VIEWER
+}
+
+enum TeamRoboticsRole {
+  BUILDER
+  PROGRAMMER
+  DRIVER
+  CAD
+  NOTEBOOK
+  SCOUT
+  TEAM_LEAD
+  MENTOR
+}
+
+enum VexProgram {
+  V5RC
+  VIQRC
+  VURC
+  VAIRC
+}
+
+enum MembershipStatus {
+  INVITED
+  ACTIVE
+  REMOVED
+}
+
+enum Visibility {
+  PRIVATE
+  TEAM
+  PUBLIC
+  UNLISTED
+}
+
+enum RobotStatus {
+  ACTIVE
+  PROTOTYPE
+  ARCHIVED
+  RETIRED
+}
+
+enum CompetitionType {
+  VRC
+  VEXU
+  VIQRC
+  CUSTOM
+}
+
+enum DrivetrainType {
+  TANK
+  ARCADE
+  HOLONOMIC
+  X_DRIVE
+  MECANUM
+  CUSTOM
+}
+
+enum MotorCartridge {
+  RPM_100
+  RPM_200
+  RPM_600
+  CUSTOM
+}
+
+enum MotorPurpose {
+  DRIVE
+  INTAKE
+  LIFT
+  ARM
+  FLYWHEEL
+  CONVEYOR
+  CLIMBER
+  ROLLER
+  INDEXER
+  CUSTOM
+}
+
+enum GearTrainKind {
+  SPUR_GEAR
+  CHAIN
+  BELT
+  COMPOUND
+  MIXED
+  CUSTOM
+}
+
+enum GearStageKind {
+  GEAR
+  SPROCKET
+  PULLEY
+  PLANETARY
+  CUSTOM
+}
+
+enum SensorKind {
+  INERTIAL
+  ROTATION
+  OPTICAL
+  DISTANCE
+  GPS
+  VISION
+  SONAR
+  ENCODER
+  LIMIT_SWITCH
+  BUMPER
+  DIGITAL_IN
+  DIGITAL_OUT
+  ANALOG_IN
+  ADI_ENCODER
+  CUSTOM
+}
+
+enum PneumaticControlType {
+  DIGITAL_OUT
+  DIGITAL_IN
+  DOUBLE_ACTING
+  SINGLE_ACTING
+}
+
+enum ControllerInput {
+  LEFT_JOYSTICK_X
+  LEFT_JOYSTICK_Y
+  RIGHT_JOYSTICK_X
+  RIGHT_JOYSTICK_Y
+  L1
+  L2
+  R1
+  R2
+  A
+  B
+  X
+  Y
+  UP
+  DOWN
+  LEFT
+  RIGHT
+}
+
+enum ControllerActionType {
+  HOLD
+  TOGGLE
+  PRESS
+  TIMED
+  MACRO
+  CONDITIONAL
+}
+
+enum CodeLanguage {
+  VEXCODE_PYTHON
+  VEXCODE_CPP
+  PROS_CPP
+}
+
+enum CodeProjectStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum CodeVersionSource {
+  MANUAL
+  AI_GENERATED
+  IMPORTED
+  RESTORED
+}
+
+enum AutonomousMode {
+  SIMPLE
+  ADVANCED
+}
+
+enum AutonomousStepKind {
+  DRIVE_DISTANCE
+  TURN_ANGLE
+  SET_MOTOR
+  SET_PNEUMATIC
+  WAIT
+  FOLLOW_PATH
+  SET_POSE
+  CUSTOM
+}
+
+enum AIAgentType {
+  ROBOT_ENGINEER
+  DIAGNOSTICS
+  CODE
+  AUTONOMOUS
+  MECHANICAL_DESIGN
+  NOTEBOOK
+  STRATEGY
+  LEARNING
+  FORUM
+}
+
+enum AIConversationMode {
+  ASK
+  DIAGNOSE
+  DESIGN
+  CALCULATE
+  CODE
+  LEARN
+}
+
+enum AIMessageRole {
+  SYSTEM
+  USER
+  ASSISTANT
+  TOOL
+}
+
+enum AIMessageStatus {
+  PENDING
+  STREAMING
+  COMPLETE
+  FAILED
+  CANCELLED
+}
+
+enum EvidenceStatus {
+  KNOWN
+  CALCULATED
+  ESTIMATED
+  ASSUMED
+  UNKNOWN
+}
+
+enum DiagnosticStatus {
+  DRAFT
+  RUNNING
+  COMPLETE
+  FAILED
+}
+
+enum CalculationType {
+  GEAR_RATIO
+  COMPOUND_GEAR_RATIO
+  SPROCKET_RATIO
+  COMPOUND_CHAIN_RATIO
+  DRIVETRAIN_SPEED
+  WHEEL_RPM
+  LINEAR_SPEED
+  MOTOR_TORQUE
+  MULTI_MOTOR_TORQUE
+  LIFT_TORQUE
+  ARM_TORQUE
+  MECHANICAL_ADVANTAGE
+  FLYWHEEL_SURFACE_VELOCITY
+  CHAIN_LENGTH
+  WHEEL_TRAVEL
+  ENCODER_DISTANCE
+  UNIT_CONVERSION
+  CUSTOM
+}
+
+enum TaskStatus {
+  BACKLOG
+  DESIGNING
+  BUILDING
+  TESTING
+  READY
+  COMPLETE
+  CANCELLED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum CompetitionStatus {
+  PLANNED
+  ACTIVE
+  COMPLETE
+  ARCHIVED
+}
+
+enum MatchPhase {
+  PRACTICE
+  QUALIFICATION
+  ALLIANCE_SELECTION
+  ELIMINATION
+  SKILLS
+  FINALS
+  OTHER
+}
+
+enum AllianceColor {
+  RED
+  BLUE
+  UNKNOWN
+}
+
+enum ForumThreadType {
+  QUESTION
+  DISCUSSION
+  GUIDE
+  BUILD_LOG
+  SHOWCASE
+  RESOURCE
+}
+
+enum ForumThreadStatus {
+  OPEN
+  LOCKED
+  ARCHIVED
+  HIDDEN
+}
+
+enum ForumVoteValue {
+  DOWN
+  UP
+}
+
+enum ReportStatus {
+  OPEN
+  IN_REVIEW
+  RESOLVED
+  DISMISSED
+}
+
+enum NotificationType {
+  TEAM_INVITE
+  TEAM_UPDATE
+  TASK_ASSIGNED
+  TASK_COMMENT
+  FORUM_REPLY
+  FORUM_MENTION
+  FORUM_VOTE
+  AI_COMPLETE
+  SYSTEM
+}
+
+enum PartCategory {
+  MOTOR
+  GEAR
+  SPROCKET
+  CHAIN
+  WHEEL
+  BEARING
+  SHAFT
+  STRUCTURAL
+  FASTENER
+  SENSOR
+  ELECTRONICS
+  PNEUMATICS
+  OTHER
+}
+
+enum GuideDifficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum RuleType {
+  ROBOT
+  MATCH
+  SKILLS
+  SCORING
+  FIELD
+  UPDATE
+  OTHER
+}
+
+enum MediaKind {
+  IMAGE
+  VIDEO
+  DOCUMENT
+  CAD
+  CODE
+  OTHER
+}
+
+enum MediaVisibility {
+  PRIVATE
+  TEAM
+  PUBLIC
+}
+
+enum AttachmentTargetType {
+  ROBOT
+  MECHANISM
+  AI_MESSAGE
+  DIAGNOSTIC
+  CALCULATION
+  BUILD_LOG
+  NOTEBOOK_ENTRY
+  TASK
+  TASK_COMMENT
+  FORUM_THREAD
+  FORUM_POST
+  PART
+  GUIDE
+  SCOUTING_REPORT
+}
+
+enum AIUsageStatus {
+  STARTED
+  SUCCEEDED
+  FAILED
+  CANCELLED
+}
+
+enum ModerationActionType {
+  WARN
+  REMOVE_CONTENT
+  LOCK_THREAD
+  SUSPEND_USER
+  RESTORE_CONTENT
+  OTHER
+}
+
+enum SearchDocumentType {
+  ROBOT
+  AI_CONVERSATION
+  CODE_PROJECT
+  FORUM_THREAD
+  FORUM_POST
+  GUIDE
+  CALCULATION
+  TASK
+  NOTEBOOK_ENTRY
+  BUILD_LOG
+  PART
+}
+
+model User {
+  id            String     @id @default(cuid())
+  email         String     @unique
+  emailVerified DateTime?
+  name          String?
+  image         String?
+  username      String?    @unique
+  displayName   String?
+  imageUrl      String?
+  passwordHash  String?
+  systemRole    SystemRole @default(MEMBER)
+  status        UserStatus @default(ACTIVE)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  profile                 Profile?
+  accounts                Account[]
+  sessions                Session[]
+  passwordResetTokens     PasswordResetToken[]
+  preferences             UserPreference?
+  teamMemberships         TeamMember[]
+  ownedTeams              Team[]             @relation("TeamOwner")
+  createdTeamInvites      TeamInvite[]       @relation("TeamInviteCreator")
+  followedVexTeams        FollowedVexTeam[]
+  ownedRobots             Robot[]            @relation("RobotOwner")
+  codeProjects            CodeProject[]
+  codeVersions            CodeVersion[]
+  aiConversations         AIConversation[]   @relation("ConversationOwner")
+  aiMessages              AIMessage[]        @relation("AIMessageAuthor")
+  diagnosticSessions      DiagnosticSession[] @relation("DiagnosticAuthor")
+  calculations            Calculation[]      @relation("CalculationOwner")
+  buildLogs               BuildLog[]         @relation("BuildLogAuthor")
+  notebookEntries         NotebookEntry[]    @relation("NotebookEntryAuthor")
+  createdTasks            Task[]             @relation("TaskCreator")
+  taskAssignments         TaskAssignee[]
+  taskComments            TaskComment[]
+  createdCompetitions     Competition[]      @relation("CompetitionCreator")
+  scoutingReports         ScoutingReport[]   @relation("ScoutingAuthor")
+  forumThreads            ForumThread[]      @relation("ForumThreadAuthor")
+  forumPosts              ForumPost[]        @relation("ForumPostAuthor")
+  forumVotes              ForumVote[]
+  filedForumReports       ForumReport[]      @relation("ForumReportReporter")
+  resolvedForumReports    ForumReport[]      @relation("ForumReportResolver")
+  notifications           Notification[]
+  mediaAssets             MediaAsset[]       @relation("MediaOwner")
+  createdParts            Part[]
+  authoredGuides          Guide[]
+  authoredAnnouncements   Announcement[]     @relation("AnnouncementAuthor")
+  blockedUsers            UserBlock[]        @relation("Blocker")
+  blockedByUsers          UserBlock[]        @relation("BlockedUser")
+  moderationActions       ModerationAction[] @relation("Moderator")
+  moderatedSubjects       ModerationAction[] @relation("ModerationSubject")
+  aiUsageRecords          AIUsageRecord[]
+  auditEvents             AuditLog[]         @relation("AuditActor")
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Profile {
+  id                    String               @id @default(cuid())
+  userId                String               @unique
+  teamNumber            String?
+  experienceLevel       ExperienceLevel?
+  preferredLanguage     ProgrammingLanguage?
+  roles                 String[]             @default([])
+  bio                   String?              @db.Text
+  timezone              String?
+  onboardingCompletedAt DateTime?
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Auth.js-compatible persistence models. Provider metadata remains provider-owned.
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  usedAt    DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+}
+
+model Team {
+  id              String   @id @default(cuid())
+  name            String
+  slug            String   @unique
+  teamNumber      String?
+  program         VexProgram @default(V5RC)
+  vexTeamId       String?
+  officialName    String?
+  organization    String?
+  location        String?
+  eventRegion     String?
+  grade           String?
+  officialLinkedAt DateTime?
+  description     String?  @db.Text
+  ownerId         String
+  currentSeasonId String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  owner             User              @relation("TeamOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  currentSeason     Season?           @relation("CurrentSeason", fields: [currentSeasonId], references: [id], onDelete: SetNull)
+  members           TeamMember[]
+  invites           TeamInvite[]
+  robots            Robot[]
+  aiConversations   AIConversation[]
+  calculations      Calculation[]
+  buildLogs         BuildLog[]
+  notebookEntries   NotebookEntry[]
+  tasks             Task[]
+  competitions      Competition[]
+  scoutingTemplates ScoutingTemplate[]
+  scoutingReports   ScoutingReport[]
+  forumThreads      ForumThread[]
+  mediaAssets       MediaAsset[]
+  aiUsageRecords    AIUsageRecord[]
+  searchDocuments   SearchDocument[]
+
+  @@index([ownerId])
+  @@index([teamNumber])
+  @@index([vexTeamId])
+}
+
+
+model TeamMember {
+  id        String           @id @default(cuid())
+  teamId    String
+  userId    String
+  permission TeamPermissionRole @default(MEMBER)
+  roboticsRoles TeamRoboticsRole[] @default([])
+  status    MembershipStatus @default(INVITED)
+  joinedAt  DateTime?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@index([userId, status])
+  @@index([teamId, permission])
+}
+
+model TeamInvite {
+  id         String   @id @default(cuid())
+  teamId     String
+  codeHash   String   @unique
+  createdById String
+  expiresAt  DateTime?
+  revokedAt  DateTime?
+  maxUses    Int?
+  currentUses Int     @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  team      Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  createdBy User @relation("TeamInviteCreator", fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@index([teamId, expiresAt])
+  @@index([createdById])
+}
+
+model UserPreference {
+  id                 String              @id @default(cuid())
+  userId             String              @unique
+  theme              String              @default("system")
+  units              String              @default("imperial")
+  preferredLanguage  ProgrammingLanguage?
+  defaultTeamId      String?
+  defaultRobotId     String?
+  profilePublic      Boolean             @default(false)
+  robotsPublic       Boolean             @default(false)
+  activityPublic     Boolean             @default(false)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model FollowedVexTeam {
+  id             String   @id @default(cuid())
+  userId         String
+  vexTeamId      String?
+  teamNumber     String
+  createdAt      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, teamNumber])
+  @@index([vexTeamId])
+}
+
+model VexTeamCache {
+  id             String   @id @default(cuid())
+  vexTeamId      String   @unique
+  teamNumber     String
+  program        String?
+  payload        Json
+  fetchedAt      DateTime @default(now())
+  expiresAt      DateTime
+
+  @@index([teamNumber])
+  @@index([expiresAt])
+}
+
+model VexEventCache {
+  id             String   @id @default(cuid())
+  vexEventId     String   @unique
+  eventCode      String?
+  payload        Json
+  fetchedAt      DateTime @default(now())
+  expiresAt      DateTime
+
+  @@index([eventCode])
+  @@index([expiresAt])
+}
+
+model RankingSnapshot {
+  id                 String   @id @default(cuid())
+  seasonKey          String
+  program            String
+  vexTeamId          String?
+  teamNumber         String
+  worldRank          Int?
+  score              Float?
+  autonomousScore    Float?
+  driverScore        Float?
+  capturedAt         DateTime @default(now())
+  sourceUpdatedAt    DateTime?
+
+  @@index([seasonKey, program, teamNumber, capturedAt])
+  @@index([capturedAt])
+}
+
+model Robot {
+  id          String        @id @default(cuid())
+  ownerId     String
+  teamId      String?
+  seasonId    String?
+  name        String
+  teamNumber  String?
+  status      RobotStatus   @default(ACTIVE)
+  visibility  Visibility    @default(PRIVATE)
+  description String?       @db.Text
+  coverImage  String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  owner               User                 @relation("RobotOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  team                Team?                @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  season              Season?              @relation(fields: [seasonId], references: [id], onDelete: SetNull)
+  configuration       RobotConfiguration?
+  codeProjects        CodeProject[]
+  autonomousRoutines  AutonomousRoutine[]
+  aiConversations     AIConversation[]
+  diagnosticSessions  DiagnosticSession[]
+  calculations        Calculation[]
+  buildLogs           BuildLog[]
+  notebookEntries     NotebookEntry[]
+  tasks               Task[]
+  forumThreads        ForumThread[]
+  mediaAssets         MediaAsset[]
+  searchDocuments     SearchDocument[]
+
+  @@index([ownerId, status])
+  @@index([teamId, status])
+  @@index([seasonId])
+  @@index([visibility])
+}
+
+model RobotConfiguration {
+  id                       String          @id @default(cuid())
+  robotId                  String          @unique
+  drivetrainType           DrivetrainType?
+  driveMotorCount          Int?
+  wheelDiameterIn          Float?
+  wheelType                String?
+  trackWidthIn             Float?
+  wheelbaseIn              Float?
+  externalGearRatio        Float?
+  theoreticalSpeedFtPerSec Float?
+  brainName                String?
+  controllerName           String?
+  lengthIn                 Float?
+  widthIn                  Float?
+  heightIn                 Float?
+  weightLb                 Float?
+  configurationVersion     Int             @default(1)
+  isComplete               Boolean         @default(false)
+  customProperties         Json?
+  createdAt                DateTime        @default(now())
+  updatedAt                DateTime        @updatedAt
+
+  robot              Robot              @relation(fields: [robotId], references: [id], onDelete: Cascade)
+  motors             Motor[]
+  gearTrains         GearTrain[]
+  mechanisms         Mechanism[]
+  sensors            Sensor[]
+  pneumatics         Pneumatic[]
+  controllerMappings ControllerMapping[]
+}
+
+model Motor {
+  id                      String         @id @default(cuid())
+  robotConfigurationId    String
+  mechanismId             String?
+  port                    Int
+  label                   String
+  cartridge               MotorCartridge
+  customRpm               Int?
+  reversed                Boolean        @default(false)
+  purpose                 MotorPurpose   @default(CUSTOM)
+  variableName            String?
+  notes                   String?        @db.Text
+  createdAt               DateTime       @default(now())
+  updatedAt               DateTime       @updatedAt
+
+  configuration       RobotConfiguration @relation(fields: [robotConfigurationId], references: [id], onDelete: Cascade)
+  mechanism           Mechanism?         @relation("MechanismMotors", fields: [mechanismId], references: [id], onDelete: SetNull)
+  drivenGearTrains    GearTrain[]        @relation("GearTrainInputMotor")
+  controllerMappings  ControllerMapping[]
+
+  @@unique([robotConfigurationId, port])
+  @@index([mechanismId])
+}
+
+model GearTrain {
+  id                   String         @id @default(cuid())
+  robotConfigurationId String
+  mechanismId          String?
+  inputMotorId         String?
+  name                 String
+  kind                 GearTrainKind  @default(SPUR_GEAR)
+  calculatedRatio      Float?
+  inputRpm             Float?
+  outputRpm            Float?
+  notes                String?        @db.Text
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+
+  configuration RobotConfiguration @relation(fields: [robotConfigurationId], references: [id], onDelete: Cascade)
+  mechanism     Mechanism?         @relation("MechanismGearTrains", fields: [mechanismId], references: [id], onDelete: SetNull)
+  inputMotor    Motor?             @relation("GearTrainInputMotor", fields: [inputMotorId], references: [id], onDelete: SetNull)
+  stages        GearTrainStage[]
+
+  @@index([robotConfigurationId])
+  @@index([mechanismId])
+}
+
+model GearTrainStage {
+  id               String        @id @default(cuid())
+  gearTrainId      String
+  sequence         Int
+  kind             GearStageKind
+  inputTeeth       Int?
+  outputTeeth      Int?
+  inputDiameterIn  Float?
+  outputDiameterIn Float?
+  ratio            Float?
+  reversed         Boolean       @default(false)
+  metadata         Json?
+  createdAt        DateTime      @default(now())
+
+  gearTrain GearTrain @relation(fields: [gearTrainId], references: [id], onDelete: Cascade)
+
+  @@unique([gearTrainId, sequence])
+}
+
+model Mechanism {
+  id                   String      @id @default(cuid())
+  robotConfigurationId String
+  parentMechanismId    String?
+  name                 String
+  type                 String
+  description          String?     @db.Text
+  configuration        Json?
+  sortOrder            Int         @default(0)
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+
+  robotConfiguration RobotConfiguration  @relation(fields: [robotConfigurationId], references: [id], onDelete: Cascade)
+  parentMechanism    Mechanism?          @relation("MechanismHierarchy", fields: [parentMechanismId], references: [id], onDelete: SetNull)
+  childMechanisms    Mechanism[]         @relation("MechanismHierarchy")
+  motors             Motor[]             @relation("MechanismMotors")
+  gearTrains         GearTrain[]         @relation("MechanismGearTrains")
+  sensors            Sensor[]             @relation("MechanismSensors")
+  pneumatics         Pneumatic[]          @relation("MechanismPneumatics")
+  controllerMappings ControllerMapping[]
+
+  @@index([robotConfigurationId, sortOrder])
+}
+
+model Sensor {
+  id                   String         @id @default(cuid())
+  robotConfigurationId String
+  mechanismId          String?
+  smartPort            Int?
+  threeWirePort        String?
+  label                String
+  type                 SensorKind
+  variableName         String?
+  purpose              String?
+  reversed             Boolean        @default(false)
+  configuration        Json?
+  notes                String?        @db.Text
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+
+  robotConfiguration RobotConfiguration @relation(fields: [robotConfigurationId], references: [id], onDelete: Cascade)
+  mechanism          Mechanism?         @relation("MechanismSensors", fields: [mechanismId], references: [id], onDelete: SetNull)
+
+  @@unique([robotConfigurationId, smartPort])
+  @@unique([robotConfigurationId, threeWirePort])
+  @@index([mechanismId])
+}
+
+model Pneumatic {
+  id                   String               @id @default(cuid())
+  robotConfigurationId String
+  mechanismId          String?
+  threeWirePort        String
+  label                String
+  controlType          PneumaticControlType @default(DIGITAL_OUT)
+  variableName         String?
+  defaultState         Boolean              @default(false)
+  notes                String?              @db.Text
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+
+  robotConfiguration RobotConfiguration  @relation(fields: [robotConfigurationId], references: [id], onDelete: Cascade)
+  mechanism          Mechanism?          @relation("MechanismPneumatics", fields: [mechanismId], references: [id], onDelete: SetNull)
+  controllerMappings ControllerMapping[]
+
+  @@unique([robotConfigurationId, threeWirePort])
+  @@index([mechanismId])
+}
+
+model ControllerMapping {
+  id                   String               @id @default(cuid())
+  robotConfigurationId String
+  mechanismId          String?
+  motorId              String?
+  pneumaticId          String?
+  input                ControllerInput
+  actionType           ControllerActionType
+  actionLabel          String
+  behavior             Json?
+  sortOrder            Int                  @default(0)
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+
+  robotConfiguration RobotConfiguration @relation(fields: [robotConfigurationId], references: [id], onDelete: Cascade)
+  mechanism          Mechanism?         @relation(fields: [mechanismId], references: [id], onDelete: SetNull)
+  motor              Motor?             @relation(fields: [motorId], references: [id], onDelete: SetNull)
+  pneumatic          Pneumatic?         @relation(fields: [pneumaticId], references: [id], onDelete: SetNull)
+
+  @@index([robotConfigurationId, input])
+}
+
+model CodeProject {
+  id          String            @id @default(cuid())
+  robotId     String
+  createdById String
+  name        String
+  language    CodeLanguage
+  status      CodeProjectStatus @default(DRAFT)
+  repositoryUrl String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  robot               Robot                @relation(fields: [robotId], references: [id], onDelete: Cascade)
+  createdBy           User                 @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  files               CodeFile[]
+  versions            CodeVersion[]
+  autonomousRoutines  AutonomousRoutine[]
+  aiConversations     AIConversation[]
+
+  @@index([robotId, status])
+  @@index([createdById])
+}
+
+model CodeFile {
+  id        String       @id @default(cuid())
+  projectId String
+  path      String
+  language  CodeLanguage?
+  content   String       @db.Text
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  project CodeProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, path])
+}
+
+model CodeVersion {
+  id              String            @id @default(cuid())
+  projectId       String
+  authorId        String
+  parentVersionId String?
+  versionNumber   Int
+  label           String
+  source          CodeVersionSource @default(MANUAL)
+  summary         String?           @db.Text
+  filesSnapshot   Json
+  validation      Json?
+  createdAt       DateTime          @default(now())
+
+  project        CodeProject   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  author         User          @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  parentVersion  CodeVersion?  @relation("CodeVersionLineage", fields: [parentVersionId], references: [id], onDelete: SetNull)
+  derivedVersions CodeVersion[] @relation("CodeVersionLineage")
+
+  @@unique([projectId, versionNumber])
+  @@index([projectId, createdAt])
+}
+
+model AutonomousRoutine {
+  id          String         @id @default(cuid())
+  robotId     String
+  projectId   String?
+  name        String
+  mode        AutonomousMode @default(SIMPLE)
+  description String?        @db.Text
+  metadata    Json?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  robot   Robot         @relation(fields: [robotId], references: [id], onDelete: Cascade)
+  project CodeProject?  @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  steps   AutonomousStep[]
+
+  @@index([robotId])
+  @@index([projectId])
+}
+
+model AutonomousStep {
+  id          String             @id @default(cuid())
+  routineId   String
+  sequence    Int
+  kind        AutonomousStepKind
+  label       String?
+  parameters  Json
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  routine AutonomousRoutine @relation(fields: [routineId], references: [id], onDelete: Cascade)
+
+  @@unique([routineId, sequence])
+}
+
+model AIConversation {
+  id             String             @id @default(cuid())
+  ownerId        String
+  robotId        String?
+  teamId         String?
+  codeProjectId  String?
+  title          String?
+  mode           AIConversationMode @default(ASK)
+  agent          AIAgentType        @default(ROBOT_ENGINEER)
+  contextSummary Json?
+  archivedAt     DateTime?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  owner            User                @relation("ConversationOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  robot            Robot?              @relation(fields: [robotId], references: [id], onDelete: SetNull)
+  team             Team?               @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  codeProject      CodeProject?        @relation(fields: [codeProjectId], references: [id], onDelete: SetNull)
+  messages         AIMessage[]
+  contextSnapshots AIContextSnapshot[]
+  diagnostics      DiagnosticSession[]
+  aiUsageRecords   AIUsageRecord[]
+
+  @@index([ownerId, updatedAt])
+  @@index([robotId, updatedAt])
+  @@index([teamId, updatedAt])
+}
+
+model AIMessage {
+  id             String          @id @default(cuid())
+  conversationId String
+  authorId       String?
+  role           AIMessageRole
+  status         AIMessageStatus @default(PENDING)
+  content        String          @db.Text
+  structuredData Json?
+  citations      Json?
+  model          String?
+  provider       String?
+  createdAt      DateTime        @default(now())
+  completedAt    DateTime?
+
+  conversation AIConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  author       User?          @relation("AIMessageAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([conversationId, createdAt])
+}
+
+model AIContextSnapshot {
+  id             String   @id @default(cuid())
+  conversationId String
+  purpose        String
+  context        Json
+  createdAt      DateTime @default(now())
+
+  conversation AIConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+}
+
+model DiagnosticSession {
+  id             String           @id @default(cuid())
+  createdById    String
+  robotId        String?
+  conversationId String?
+  status         DiagnosticStatus @default(DRAFT)
+  symptom        String           @db.Text
+  findings       Json?
+  confidence     Float?
+  evidenceStatus EvidenceStatus   @default(UNKNOWN)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  createdBy    User            @relation("DiagnosticAuthor", fields: [createdById], references: [id], onDelete: Restrict)
+  robot        Robot?          @relation(fields: [robotId], references: [id], onDelete: SetNull)
+  conversation AIConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+
+  @@index([createdById, createdAt])
+  @@index([robotId, createdAt])
+}
+
+model Calculation {
+  id             String          @id @default(cuid())
+  ownerId        String
+  robotId        String?
+  teamId         String?
+  type           CalculationType
+  name           String?
+  visibility     Visibility      @default(PRIVATE)
+  input          Json
+  output         Json
+  formula        String?         @db.Text
+  evidenceStatus EvidenceStatus  @default(CALCULATED)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  owner User   @relation("CalculationOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  robot Robot? @relation(fields: [robotId], references: [id], onDelete: SetNull)
+  team  Team?  @relation(fields: [teamId], references: [id], onDelete: SetNull)
+
+  @@index([ownerId, createdAt])
+  @@index([robotId, type])
+  @@index([teamId, type])
+}
+
+model BuildLog {
+  id          String   @id @default(cuid())
+  teamId      String
+  robotId     String?
+  authorId    String
+  occurredOn  DateTime
+  title       String
+  summary     String?  @db.Text
+  reason      String?  @db.Text
+  testing     String?  @db.Text
+  results     String?  @db.Text
+  analysis    String?  @db.Text
+  nextSteps   String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  robot  Robot? @relation(fields: [robotId], references: [id], onDelete: SetNull)
+  author User   @relation("BuildLogAuthor", fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([teamId, occurredOn])
+  @@index([robotId, occurredOn])
+}
+
+model NotebookEntry {
+  id          String   @id @default(cuid())
+  teamId      String
+  robotId     String?
+  authorId    String
+  occurredOn  DateTime
+  title       String
+  objective   String?  @db.Text
+  problem     String?  @db.Text
+  research    String?  @db.Text
+  ideas       String?  @db.Text
+  decision    String?  @db.Text
+  design      String?  @db.Text
+  prototype   String?  @db.Text
+  testing     String?  @db.Text
+  results     String?  @db.Text
+  analysis    String?  @db.Text
+  changes     String?  @db.Text
+  nextSteps   String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  robot  Robot? @relation(fields: [robotId], references: [id], onDelete: SetNull)
+  author User   @relation("NotebookEntryAuthor", fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([teamId, occurredOn])
+  @@index([robotId, occurredOn])
+}
+
+model Task {
+  id          String       @id @default(cuid())
+  teamId      String
+  robotId     String?
+  createdById String
+  title       String
+  description String?      @db.Text
+  status      TaskStatus   @default(BACKLOG)
+  priority    TaskPriority @default(MEDIUM)
+  dueAt       DateTime?
+  position    Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  team        Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  robot       Robot?         @relation(fields: [robotId], references: [id], onDelete: SetNull)
+  createdBy   User           @relation("TaskCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  assignees   TaskAssignee[]
+  comments    TaskComment[]
+
+  @@index([teamId, status, position])
+  @@index([robotId, status])
+  @@index([dueAt])
+}
+
+model TaskAssignee {
+  id        String   @id @default(cuid())
+  taskId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, userId])
+  @@index([userId])
+}
+
+model TaskComment {
+  id        String   @id @default(cuid())
+  taskId    String
+  authorId  String
+  body      String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([taskId, createdAt])
+}
+
+model Competition {
+  id           String            @id @default(cuid())
+  teamId       String?
+  seasonId     String?
+  createdById  String
+  externalId   String?           @unique
+  name         String
+  location     String?
+  startsAt     DateTime?
+  endsAt       DateTime?
+  status       CompetitionStatus @default(PLANNED)
+  metadata     Json?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  team            Team?            @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  season          Season?          @relation(fields: [seasonId], references: [id], onDelete: SetNull)
+  createdBy       User             @relation("CompetitionCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  matches         Match[]
+  scoutingReports ScoutingReport[]
+
+  @@index([teamId, startsAt])
+  @@index([seasonId, startsAt])
+}
+
+model Match {
+  id             String     @id @default(cuid())
+  competitionId  String
+  externalId     String?
+  phase          MatchPhase @default(QUALIFICATION)
+  matchNumber    Int?
+  scheduledAt    DateTime?
+  startedAt      DateTime?
+  endedAt        DateTime?
+  result         Json?
+  notes          String?    @db.Text
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  competition     Competition      @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  alliances       MatchAlliance[]
+  scoutingReports ScoutingReport[]
+
+  @@unique([competitionId, phase, matchNumber])
+  @@index([competitionId, scheduledAt])
+}
+
+model MatchAlliance {
+  id          String        @id @default(cuid())
+  matchId     String
+  color       AllianceColor
+  position    Int
+  teamNumber  String
+  teamName    String?
+  score       Int?
+  metadata    Json?
+  createdAt   DateTime      @default(now())
+
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@unique([matchId, color, position])
+  @@index([teamNumber])
+}
+
+model ScoutingTemplate {
+  id        String   @id @default(cuid())
+  teamId    String
+  seasonId  String?
+  name      String
+  definition Json
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  team   Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  season Season? @relation(fields: [seasonId], references: [id], onDelete: SetNull)
+  reports ScoutingReport[]
+
+  @@index([teamId, seasonId])
+}
+
+model ScoutingReport {
+  id             String   @id @default(cuid())
+  teamId         String
+  competitionId  String
+  matchId        String?
+  templateId     String?
+  authorId       String
+  observedTeamNo String
+  payload        Json
+  notes          String?  @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  team        Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  competition Competition      @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  match       Match?           @relation(fields: [matchId], references: [id], onDelete: SetNull)
+  template    ScoutingTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  author      User             @relation("ScoutingAuthor", fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([teamId, competitionId])
+  @@index([observedTeamNo, competitionId])
+}
+
+model ForumCategory {
+  id               String         @id @default(cuid())
+  parentCategoryId String?
+  slug             String         @unique
+  name             String
+  description      String?        @db.Text
+  sortOrder        Int            @default(0)
+  isArchived       Boolean        @default(false)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  parentCategory ForumCategory?  @relation("ForumCategoryHierarchy", fields: [parentCategoryId], references: [id], onDelete: SetNull)
+  childCategories ForumCategory[] @relation("ForumCategoryHierarchy")
+  threads        ForumThread[]
+
+  @@index([parentCategoryId, sortOrder])
+}
+
+model ForumThread {
+  id          String            @id @default(cuid())
+  categoryId  String
+  authorId    String
+  teamId      String?
+  robotId     String?
+  slug        String            @unique
+  title       String
+  body        String            @db.Text
+  type        ForumThreadType   @default(DISCUSSION)
+  status      ForumThreadStatus @default(OPEN)
+  visibility  Visibility        @default(PUBLIC)
+  tags        String[]          @default([])
+  viewCount   Int               @default(0)
+  lastReplyAt DateTime?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  category ForumCategory  @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  author   User           @relation("ForumThreadAuthor", fields: [authorId], references: [id], onDelete: Restrict)
+  team     Team?          @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  robot    Robot?         @relation(fields: [robotId], references: [id], onDelete: SetNull)
+  posts    ForumPost[]
+  solution ForumSolution? @relation("ThreadSolution")
+  reports  ForumReport[]
+
+  @@index([categoryId, status, lastReplyAt])
+  @@index([authorId, createdAt])
+  @@index([teamId])
+  @@index([robotId])
+}
+
+model ForumPost {
+  id           String      @id @default(cuid())
+  threadId     String
+  authorId     String
+  parentPostId String?
+  body         String      @db.Text
+  editedAt     DateTime?
+  deletedAt    DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  thread      ForumThread  @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  author      User         @relation("ForumPostAuthor", fields: [authorId], references: [id], onDelete: Restrict)
+  parentPost  ForumPost?   @relation("ForumPostHierarchy", fields: [parentPostId], references: [id], onDelete: SetNull)
+  childPosts  ForumPost[]  @relation("ForumPostHierarchy")
+  votes       ForumVote[]
+  solution    ForumSolution? @relation("PostSolution")
+  reports     ForumReport[]
+
+  @@index([threadId, createdAt])
+  @@index([authorId, createdAt])
+}
+
+model ForumVote {
+  id        String          @id @default(cuid())
+  postId    String
+  userId    String
+  value     ForumVoteValue
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  post ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@index([userId])
+}
+
+model ForumSolution {
+  id          String   @id @default(cuid())
+  threadId    String   @unique
+  postId      String   @unique
+  selectedAt  DateTime @default(now())
+
+  thread ForumThread @relation("ThreadSolution", fields: [threadId], references: [id], onDelete: Cascade)
+  post   ForumPost   @relation("PostSolution", fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model ForumReport {
+  id           String       @id @default(cuid())
+  reporterId   String
+  resolvedById String?
+  threadId     String?
+  postId       String?
+  reason       String       @db.Text
+  status       ReportStatus @default(OPEN)
+  resolution   String?      @db.Text
+  createdAt    DateTime     @default(now())
+  resolvedAt   DateTime?
+
+  reporter   User         @relation("ForumReportReporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  resolvedBy User?        @relation("ForumReportResolver", fields: [resolvedById], references: [id], onDelete: SetNull)
+  thread     ForumThread? @relation(fields: [threadId], references: [id], onDelete: SetNull)
+  post       ForumPost?   @relation(fields: [postId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([reporterId])
+}
+
+model UserBlock {
+  id        String   @id @default(cuid())
+  blockerId String
+  blockedId String
+  createdAt DateTime @default(now())
+
+  blocker User @relation("Blocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked User @relation("BlockedUser", fields: [blockedId], references: [id], onDelete: Cascade)
+
+  @@unique([blockerId, blockedId])
+  @@index([blockedId])
+}
+
+model Notification {
+  id         String           @id @default(cuid())
+  userId     String
+  type       NotificationType
+  title      String
+  body       String?          @db.Text
+  payload    Json?
+  readAt     DateTime?
+  createdAt  DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt, createdAt])
+}
+
+model Part {
+  id                  String       @id @default(cuid())
+  seasonId            String?
+  createdById         String?
+  sku                 String?      @unique
+  name                String
+  category            PartCategory
+  manufacturer        String?
+  description         String?      @db.Text
+  dimensions          Json?
+  purpose             String?      @db.Text
+  commonApplications  String[]    @default([])
+  documentationUrl    String?
+  isPublished         Boolean      @default(false)
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  season                    Season?             @relation(fields: [seasonId], references: [id], onDelete: SetNull)
+  createdBy                 User?               @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  compatibilityFrom         PartCompatibility[] @relation("CompatibilitySource")
+  compatibilityTo           PartCompatibility[] @relation("CompatibilityTarget")
+
+  @@index([category, isPublished])
+  @@index([seasonId])
+}
+
+model PartCompatibility {
+  id                String   @id @default(cuid())
+  partId            String
+  compatiblePartId  String
+  isCompatible      Boolean  @default(true)
+  notes             String?  @db.Text
+  conditions        Json?
+  createdAt         DateTime @default(now())
+
+  part           Part @relation("CompatibilitySource", fields: [partId], references: [id], onDelete: Cascade)
+  compatiblePart Part @relation("CompatibilityTarget", fields: [compatiblePartId], references: [id], onDelete: Cascade)
+
+  @@unique([partId, compatiblePartId])
+  @@index([compatiblePartId])
+}
+
+model Guide {
+  id            String          @id @default(cuid())
+  authorId      String?
+  seasonId      String?
+  slug          String          @unique
+  title         String
+  summary       String?         @db.Text
+  body          String          @db.Text
+  difficulty    GuideDifficulty @default(BEGINNER)
+  visibility    Visibility      @default(PUBLIC)
+  publishedAt   DateTime?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  author         User?           @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  season         Season?         @relation(fields: [seasonId], references: [id], onDelete: SetNull)
+  mechanismGuide MechanismGuide?
+
+  @@index([seasonId, publishedAt])
+  @@index([visibility, publishedAt])
+}
+
+model MechanismGuide {
+  id            String   @id @default(cuid())
+  guideId       String   @unique
+  mechanismType String
+  diagramData   Json?
+  advantages    Json?
+  disadvantages Json?
+  commonFailures Json?
+  typicalGearing Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  guide Guide @relation(fields: [guideId], references: [id], onDelete: Cascade)
+
+  @@index([mechanismType])
+}
+
+model Season {
+  id          String          @id @default(cuid())
+  key         String          @unique
+  name        String
+  gameName    String?
+  competition CompetitionType @default(VRC)
+  startsAt    DateTime?
+  endsAt      DateTime?
+  isCurrent   Boolean         @default(false)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  currentForTeams   Team[]             @relation("CurrentSeason")
+  robots            Robot[]
+  competitions      Competition[]
+  scoutingTemplates ScoutingTemplate[]
+  parts             Part[]
+  guides            Guide[]
+  gameRules         GameRule[]
+
+  @@index([isCurrent])
+}
+
+model GameRule {
+  id            String   @id @default(cuid())
+  seasonId      String
+  ruleNumber    String?
+  type          RuleType
+  title         String
+  body          String   @db.Text
+  version       String
+  sourceUrl     String?
+  effectiveFrom DateTime?
+  isCurrent     Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  season Season @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+
+  @@index([seasonId, type, isCurrent])
+  @@index([seasonId, ruleNumber])
+}
+
+model MediaAsset {
+  id          String          @id @default(cuid())
+  ownerId     String
+  teamId      String?
+  robotId     String?
+  storageKey  String          @unique
+  fileName    String
+  contentType String
+  byteSize    Int
+  checksum    String?
+  kind        MediaKind
+  visibility  MediaVisibility @default(PRIVATE)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  owner       User              @relation("MediaOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  team        Team?             @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  robot       Robot?            @relation(fields: [robotId], references: [id], onDelete: SetNull)
+  attachments ContentAttachment[]
+
+  @@index([ownerId, createdAt])
+  @@index([teamId, createdAt])
+  @@index([robotId, createdAt])
+}
+
+// The target is intentionally polymorphic so new product surfaces can attach files
+// without forcing a storage migration. Authorization is always checked on the target.
+model ContentAttachment {
+  id          String               @id @default(cuid())
+  mediaAssetId String
+  targetType  AttachmentTargetType
+  targetId    String
+  caption     String?              @db.Text
+  sortOrder   Int                  @default(0)
+  createdAt   DateTime             @default(now())
+
+  mediaAsset MediaAsset @relation(fields: [mediaAssetId], references: [id], onDelete: Cascade)
+
+  @@index([targetType, targetId, sortOrder])
+}
+
+model AIUsageRecord {
+  id             String        @id @default(cuid())
+  userId         String
+  teamId         String?
+  conversationId String?
+  agent          AIAgentType
+  provider       String
+  model          String
+  status         AIUsageStatus @default(STARTED)
+  promptTokens   Int?
+  completionTokens Int?
+  totalTokens    Int?
+  estimatedCost  Float?
+  metadata       Json?
+  createdAt      DateTime      @default(now())
+  completedAt    DateTime?
+
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team         Team?           @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  conversation AIConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt, agent])
+  @@index([userId, createdAt])
+  @@index([teamId, createdAt])
+}
+
+model Announcement {
+  id          String   @id @default(cuid())
+  authorId    String
+  title       String
+  body        String   @db.Text
+  isPublished Boolean  @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  author User @relation("AnnouncementAuthor", fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([isPublished, publishedAt])
+}
+
+model ModerationAction {
+  id            String               @id @default(cuid())
+  moderatorId   String
+  subjectUserId String?
+  action        ModerationActionType
+  targetType    String?
+  targetId      String?
+  reason        String?              @db.Text
+  expiresAt     DateTime?
+  createdAt     DateTime             @default(now())
+
+  moderator   User  @relation("Moderator", fields: [moderatorId], references: [id], onDelete: Restrict)
+  subjectUser User? @relation("ModerationSubject", fields: [subjectUserId], references: [id], onDelete: SetNull)
+
+  @@index([subjectUserId, createdAt])
+  @@index([targetType, targetId])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  action     String
+  targetType String
+  targetId   String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  actor User? @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([targetType, targetId, createdAt])
+  @@index([actorId, createdAt])
+}
+
+// This is an optional denormalized index for universal search. The source record
+// remains authoritative; jobs can rebuild this table as content changes.
+model SearchDocument {
+  id          String             @id @default(cuid())
+  type        SearchDocumentType
+  sourceId    String
+  teamId      String?
+  robotId     String?
+  ownerId     String?
+  visibility  Visibility         @default(PRIVATE)
+  title       String
+  body        String?            @db.Text
+  metadata    Json?
+  updatedAt   DateTime           @updatedAt
+  createdAt   DateTime           @default(now())
+
+  team  Team?  @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  robot Robot? @relation(fields: [robotId], references: [id], onDelete: SetNull)
+
+  @@unique([type, sourceId])
+  @@index([teamId, visibility])
+  @@index([robotId, visibility])
+  @@index([ownerId, visibility])
+}

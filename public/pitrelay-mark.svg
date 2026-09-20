@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="PitRelay robotics workspace">
+  <defs>
+    <linearGradient id="chassis" x1="26" y1="20" x2="102" y2="108" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4ed5d0"/>
+      <stop offset="1" stop-color="#2585db"/>
+    </linearGradient>
+    <linearGradient id="brain" x1="44" y1="42" x2="86" y2="87" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f8fbff"/>
+      <stop offset="1" stop-color="#dceaf7"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="32" fill="#10233c"/>
+  <!-- A top-down competition robot: four drive wheels, chassis rails, and brain. -->
+  <rect x="22" y="32" width="17" height="27" rx="7" fill="#07182b" stroke="#4d6986" stroke-width="3"/>
+  <rect x="89" y="32" width="17" height="27" rx="7" fill="#07182b" stroke="#4d6986" stroke-width="3"/>
+  <rect x="22" y="69" width="17" height="27" rx="7" fill="#07182b" stroke="#4d6986" stroke-width="3"/>
+  <rect x="89" y="69" width="17" height="27" rx="7" fill="#07182b" stroke="#4d6986" stroke-width="3"/>
+  <path d="M40 34 64 21l24 13v60L64 107 40 94V34Z" fill="url(#chassis)"/>
+  <path d="M47 40 64 31l17 9v48L64 98 47 88V40Z" fill="none" stroke="#b9f4ef" stroke-opacity=".7" stroke-width="3"/>
+  <path d="m64 25 9 10H55l9-10Z" fill="#ff775f"/>
+  <rect x="47" y="47" width="34" height="32" rx="6" fill="url(#brain)"/>
+  <path d="M55 56h18M55 63h11" stroke="#173253" stroke-linecap="round" stroke-width="4"/>
+  <circle cx="72" cy="64" r="3" fill="#ff5d50"/>
+  <path d="M50 84h28" stroke="#e7fbfb" stroke-linecap="round" stroke-width="3"/>
+</svg>

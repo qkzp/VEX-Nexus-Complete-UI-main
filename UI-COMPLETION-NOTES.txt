@@ -1,0 +1,36 @@
+VEX Nexus — Complete UI Pass
+
+This package includes a full application-wide UI audit and completion pass.
+
+Completed UI coverage:
+- DEV gate and reset flow
+- Command Center and empty workspace setup
+- Workspace sidebar, team selector, top bar, search and mobile navigation
+- Team create/join/overview/members/settings/invite flows
+- Robots list, active robot selection and robot detail/configuration
+- V5 Brain 21 Smart Ports + 8 three-wire port configuration interface
+- Code Lab source-of-truth panels, motor groups, V5 controller mapping and validation
+- Field Lab route editor, zoom/grid/waypoints and route sequence UI
+- Event Mode search, selected event, next-match, rankings and notes UI
+- World Skills / official team profile panels
+- Strategy and scouting workspace
+- Testing/reliability workspace
+- Engineering notebook viewer/evidence workspace
+- Engineering calculators
+- Team Hub announcements, calendar, availability, polls and resources
+- Build Log, Tasks, Rules, Search and Community
+- Responsive layouts
+- Loading, error and 404 states
+
+Validation performed before packaging:
+- TypeScript: pass
+- ESLint: pass
+- robot-engine tests: 6/6 pass
+- Internal static route audit: 0 missing routes
+- UI class audit: all static classes used by React have CSS definitions
+
+Start locally:
+1. Start Docker Desktop.
+2. npm install
+3. npm run local
+4. Open http://localhost:3000
