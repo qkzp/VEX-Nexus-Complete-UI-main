@@ -6,22 +6,17 @@
 - Local:         http://localhost:3000
 - Network:       http://192.168.86.250:3000
 - Environments: .env
-✓ Ready in 692ms
-✓ Running next.config.ts took 123ms
+✓ Ready in 636ms
+✓ Running next.config.ts took 56ms
 Creating turbopack project {
   dir: 'C:\\Users\\Found\\Downloads\\VEX-Nexus-Complete-UI-main\\VEX-Nexus-Complete-UI-main',
   testMode: true
 }
 
- GET /api/health 200 in 1802ms (next.js: 561ms, application-code: 1241ms)
- GET / 200 in 1842ms (next.js: 439ms, application-code: 1402ms)
- GET / 200 in 74ms (next.js: 4ms, application-code: 69ms)
- GET / 200 in 85ms (next.js: 6ms, application-code: 79ms)
- POST / 200 in 89ms (next.js: 4ms, application-code: 85ms)
-  └─ ƒ loginAction({}, {}) in 26ms src/lib/actions/auth.ts
- POST / 200 in 24ms (next.js: 4ms, application-code: 20ms)
-  └─ ƒ loginAction({"error":"That email or password was not recognized."}, {}) in 8ms src/lib/actions/auth.ts
- GET / 200 in 77ms (next.js: 3ms, application-code: 74ms)
- POST / 200 in 19ms (next.js: 4ms, application-code: 15ms)
-  └─ ƒ loginAction({}, {}) in 5ms src/lib/actions/auth.ts
- GET /register?callbackUrl=%2Fapp%2Fdashboard 200 in 720ms (next.js: 664ms, application-code: 56ms)
+ GET /api/health 200 in 1670ms (next.js: 353ms, application-code: 1317ms)
+ GET /api/health 200 in 54ms (next.js: 9ms, application-code: 45ms)
+ GET /api/health 200 in 24ms (next.js: 7ms, application-code: 17ms)
+ GET /api/health 200 in 54ms (next.js: 7ms, application-code: 47ms)
+ GET /api/health 200 in 20ms (next.js: 5ms, application-code: 15ms)
+ GET /api/health 200 in 51ms (next.js: 10ms, application-code: 41ms)
+ GET /api/health 200 in 18ms (next.js: 5ms, application-code: 13ms)
