@@ -756,7 +756,7 @@ input, textarea, select { background: var(--surface); border: 1px solid var(--li
 .gear-teeth { fill: #346cae; stroke: #1d4d84; stroke-linejoin: round; stroke-width: 2.2; }.gear-core { fill: #214f87; stroke: #173e6d; stroke-width: 2; }.gear-spokes { fill: none; stroke: #86b3e8; stroke-width: 3; }.gear-bore { fill: #f7f9fc; stroke: #173e6d; stroke-width: 3; }
 .gear-graphic.is-driven .gear-teeth { fill: #2d766d; stroke: #1b554f; }.gear-graphic.is-driven .gear-core { fill: #205b54; stroke: #174942; }.gear-graphic.is-driven .gear-spokes { stroke: #80c1b5; }.gear-graphic.is-driven .gear-bore { stroke: #174942; }
 .gear-graphic.is-pending .gear-teeth { fill: #d4dde8; stroke: #aebdce; }.gear-graphic.is-pending .gear-core { fill: #c5d0dd; stroke: #aebdce; }.gear-graphic.is-pending .gear-spokes { stroke: #eaf0f6; }.gear-graphic.is-pending .gear-bore { stroke: #aebdce; }
-.gear-mesh-contact { background: #9bb0ca; display: block; height: 2px; position: relative; width: 12px; }.gear-mesh-contact::after { background: #fff; border: 2px solid #9bb0ca; border-radius: 50%; content: ""; height: 4px; left: 2px; position: absolute; top: -3px; width: 4px; }
+.gear-mesh-contact { display: block; height: 0; position: relative; width: 0; z-index: 1; }.gear-mesh-contact::after { background: #fff; border: 2px solid #9bb0ca; border-radius: 50%; content: ""; height: 4px; left: -4px; position: absolute; top: -4px; width: 4px; }
 .gear-mesh-copy { align-content: center; display: grid; gap: 3px; min-width: 0; }.gear-mesh-copy > span { color: #7c8b9e; font-family: var(--font-mono); font-size: 7px; font-weight: 800; }.gear-mesh-copy strong { color: #26364d; font-size: 13px; }.gear-mesh-copy small { color: #6f7e91; font-size: 8.5px; line-height: 1.5; }
 
 /* Code lab */
