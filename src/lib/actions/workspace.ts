@@ -20,6 +20,7 @@ export type WorkspaceActionState = {
   notebookDraftId?: string;
 };
 
+// Shared validation and response helpers.
 const teamIdSchema = z.string().trim().min(1).max(64);
 const optionalText = (max: number) => z.string().trim().max(max).optional().transform((value) => value || null);
 
@@ -53,6 +54,7 @@ const createRobotSchema = z.object({
   seasonLabel: optionalText(80),
 });
 
+// Robot profile and drivetrain actions.
 export async function createRobotAction(
   _: WorkspaceActionState,
   formData: FormData,

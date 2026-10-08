@@ -8,6 +8,7 @@
 export const VEX_SMART_PORT_MIN = 1;
 export const VEX_SMART_PORT_MAX = 21;
 
+// Supported VEX hardware and code targets.
 export const VEX_THREE_WIRE_PORTS = [
   "A",
   "B",
@@ -75,6 +76,7 @@ export type TransmissionType = "gear" | "sprocket" | "belt";
 export type RotationDirection = "same" | "reversed";
 export type ProgramMode = "autonomous" | "driver-control" | "competition";
 
+// Data shapes shared by calculators, validators, and code generators.
 export interface GearStage {
   /** Number of teeth on the input / driving gear or sprocket. */
   drivingTeeth: number;
@@ -271,6 +273,7 @@ export interface CodeConfigurationValidation {
   portConflicts: readonly PortConflict[];
 }
 
+// Sets make repeated validation checks easy to read and inexpensive.
 const CODE_LANGUAGE_SET = new Set<string>(SUPPORTED_CODE_LANGUAGES);
 const DRIVETRAIN_TYPE_SET = new Set<string>(SUPPORTED_DRIVETRAIN_TYPES);
 const SMART_SENSOR_TYPE_SET = new Set<string>(VEX_SMART_SENSOR_TYPES);
@@ -334,6 +337,7 @@ const COMMON_RESERVED_IDENTIFIERS = new Set<string>([
   "yield",
 ]);
 
+// Small normalization and validation helpers used by the public functions below.
 function assertPositiveFinite(value: number, fieldName: string): void {
   if (!Number.isFinite(value) || value <= 0) {
     throw new RangeError(`${fieldName} must be a finite number greater than zero.`);
@@ -454,6 +458,7 @@ function isValidIdentifier(identifier: string): boolean {
   );
 }
 
+// Public hardware helpers.
 /** Returns whether a value is a physical V5 Smart Port number (1 through 21). */
 export function isValidSmartPort(port: unknown): port is number {
   return (
@@ -482,6 +487,7 @@ export function isSupportedMotorCartridgeRpm(rpm: unknown): rpm is MotorCartridg
   return typeof rpm === "number" && CARTRIDGE_RPM_SET.has(rpm);
 }
 
+// Drivetrain and transmission calculations.
 /** Calculates one external gear, sprocket, or belt stage. */
 export function calculateGearRatio(stage: GearStage): GearRatioResult {
   if (!stage || typeof stage !== "object") {
@@ -600,6 +606,7 @@ export function calculateDrivetrainSpeed(
   };
 }
 
+// Port assignment helpers.
 /**
  * Finds duplicate physical port assignments. Numeric strings and lower-case
  * three-wire labels are normalized, so "1" conflicts with 1 and "a" with A.
@@ -730,6 +737,7 @@ export function getCodePortAssignments(
   return assignments;
 }
 
+// Code-generation configuration validation.
 /**
  * Validates data required to emit VEXcode or PROS device definitions. It is
  * intentionally deterministic and returns all issues in one pass.
