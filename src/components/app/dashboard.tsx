@@ -10,6 +10,7 @@ import {
   Flag,
   Gauge,
   ListChecks,
+  Plus,
   Route,
   Wrench,
 } from "lucide-react";
@@ -151,11 +152,19 @@ export function CommandCenter({ userName, team, data }: DashboardProps) {
     <section className="workspace-page command-center">
       <header className="command-header dashboard-header">
         <div>
-          <div className="page-kicker">Command center - {teamLabel}</div>
-          <h1>Good work starts with a clear next move.</h1>
-          <p>Use the team&apos;s saved robot, testing, task, and evidence records to decide what happens next.</p>
+          <div className="page-kicker">Overview / {teamLabel}</div>
+          <h1>Let&apos;s get building, {displayName(userName)}.</h1>
+          <p>Your team&apos;s work, readiness, and next steps in one place.</p>
         </div>
+        <Link href={teamTasksHref} className="button button-primary"><Plus size={16} aria-hidden="true" /> Plan work</Link>
       </header>
+
+      <nav className="dashboard-shortcuts" aria-label="Quick actions">
+        <Link href={testingHref}><Gauge size={18} aria-hidden="true" /><span>Record a test<small>Capture performance</small></span><ArrowRight size={15} aria-hidden="true" /></Link>
+        <Link href={fieldLabHref}><Route size={18} aria-hidden="true" /><span>Plan autonomous<small>Build the next route</small></span><ArrowRight size={15} aria-hidden="true" /></Link>
+        <Link href={buildLogHref}><Wrench size={18} aria-hidden="true" /><span>Log a build<small>Save what changed</small></span><ArrowRight size={15} aria-hidden="true" /></Link>
+        <Link href={notebookHref}><FileClock size={18} aria-hidden="true" /><span>Open notebook<small>Document the decision</small></span><ArrowRight size={15} aria-hidden="true" /></Link>
+      </nav>
 
       <section className={nextMoveClass} aria-labelledby="next-move-title">
         <div className="next-move-icon"><Gauge aria-hidden="true" size={22} /></div>

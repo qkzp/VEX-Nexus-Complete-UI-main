@@ -11,6 +11,7 @@ import {
   Calculator,
   CalendarDays,
   Crosshair,
+  FileClock,
   LayoutDashboard,
   MessageSquareText,
   Scale,
@@ -20,7 +21,7 @@ import {
 } from "lucide-react";
 import { LinkPendingIndicator } from "@/components/ui/link-pending-indicator";
 
-const groups = [
+export const workspaceGroups = [
   { label: "TEAM", items: [
     { href: "/app/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/team/tasks", label: "Tasks", icon: ClipboardCheck },
@@ -35,6 +36,7 @@ const groups = [
   ]},
   { label: "TOOLS", items: [
     { href: "/calculators", label: "Calculators", icon: Calculator },
+    { href: "/build-log", label: "Build log", icon: FileClock },
     { href: "/notebook", label: "Engineering notebook", icon: BookOpenText },
   ]},
   { label: "COMPETE", items: [
@@ -58,14 +60,14 @@ function withTeam(href: string, teamId: string | null) {
   return `${url.pathname}${query ? `?${query}` : ""}`;
 }
 
-export function WorkspaceNav() {
+export function WorkspaceNav({ activeTeamId }: { activeTeamId?: string | null }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const teamId = searchParams.get("team");
+  const teamId = activeTeamId ?? searchParams.get("team");
 
   return (
     <nav className="workspace-nav" aria-label="Workspace">
-      {groups.map((group) => (
+      {workspaceGroups.map((group) => (
         <div className="workspace-nav-group" key={group.label || "home"}>
           {group.label ? <span className="workspace-nav-heading">{group.label}</span> : null}
           {group.items.map(({ href, label, icon: Icon }) => {

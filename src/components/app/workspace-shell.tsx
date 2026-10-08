@@ -3,13 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useRef } from "react";
-import { ChevronRight, LockKeyhole, Plus, UsersRound } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronRight, LockKeyhole, Menu, Plus, UsersRound, X } from "lucide-react";
 import { signOutAction } from "@/lib/actions/session";
 import { setActiveTeamAction } from "@/lib/actions/workspace";
 import type { WorkspaceTeam } from "@/lib/workspace/data";
 import { WorkspaceNav } from "./workspace-nav";
-import { WorkspaceSearchLink } from "./workspace-search-link";
+import { WorkspaceLauncher } from "./workspace-launcher";
 import { PendingSubmitButton } from "@/components/ui/pending-submit-button";
 
 type WorkspaceShellProps = {
@@ -41,6 +41,7 @@ export function WorkspaceShell({ teams, activeTeamId, currentUser, children }: W
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const teamPickerRef = useRef<HTMLDetailsElement>(null);
+  const [navigationOpen, setNavigationOpen] = useState(false);
   const requestedTeamId = searchParams.get("team");
   const currentTeamId =
     (requestedTeamId && teams.some((team) => team.id === requestedTeamId) ? requestedTeamId : activeTeamId) ?? null;
@@ -87,7 +88,9 @@ export function WorkspaceShell({ teams, activeTeamId, currentUser, children }: W
 
   return (
     <div className="workspace-app">
-      <aside className="workspace-sidebar">
+      <a href="#workspace-content" className="workspace-skip-link">Skip to workspace</a>
+      <aside className="workspace-sidebar" data-nav-open={navigationOpen}>
+        <div className="workspace-brand-row">
         <Link className="workspace-brand" href={dashboardHref} aria-label="BoltCanvas command center">
           <Image className="workspace-mark-image" src="/boltcanvas-mark.svg" alt="" width={44} height={44} priority />
           <span>
@@ -95,6 +98,8 @@ export function WorkspaceShell({ teams, activeTeamId, currentUser, children }: W
             <small>Robotics team hub</small>
           </span>
         </Link>
+        <button type="button" className="workspace-mobile-menu" aria-label={navigationOpen ? "Close navigation" : "Open navigation"} aria-expanded={navigationOpen} aria-controls="workspace-navigation" onClick={() => setNavigationOpen(!navigationOpen)}>{navigationOpen ? <X size={20} /> : <Menu size={20} />}</button>
+        </div>
 
         <div className="workspace-team-summary">
           <span className="workspace-overline">Team selector</span>
@@ -145,7 +150,9 @@ export function WorkspaceShell({ teams, activeTeamId, currentUser, children }: W
           )}
         </div>
 
-        <WorkspaceNav />
+        <div id="workspace-navigation" className="workspace-navigation" onClick={(event) => {
+          if (event.target instanceof Element && event.target.closest("a")) setNavigationOpen(false);
+        }}><WorkspaceNav activeTeamId={currentTeamId} /></div>
 
         <div className="workspace-sidebar-footer">
           <Link href={createRobotHref} className="workspace-create-link">
@@ -185,11 +192,11 @@ export function WorkspaceShell({ teams, activeTeamId, currentUser, children }: W
             )}
             <div className="workspace-topbar-summary">
               <span className="workspace-status-dot" aria-hidden="true" />
-              Real team data only
+              Team workspace
             </div>
           </div>
           <div className="workspace-topbar-tools">
-            <WorkspaceSearchLink href={searchHref} />
+            <WorkspaceLauncher href={searchHref} />
             <Link href={tasksHref} className="workspace-topbar-action">Plan work</Link>
             <Link href={teamHref} className="workspace-topbar-secondary">
               <UsersRound aria-hidden="true" size={15} />
@@ -197,7 +204,7 @@ export function WorkspaceShell({ teams, activeTeamId, currentUser, children }: W
             </Link>
           </div>
         </header>
-        <div className="workspace-route-slot" key={pathname}>{children}</div>
+        <div className="workspace-route-slot" id="workspace-content" tabIndex={-1} key={pathname}>{children}</div>
       </main>
     </div>
   );

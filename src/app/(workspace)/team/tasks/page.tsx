@@ -1,6 +1,6 @@
 import { ClipboardCheck, Plus } from "lucide-react";
 import { CreateTaskForm } from "@/components/app/workspace-forms";
-import { TaskStatusForm } from "@/components/app/task-board";
+import { TaskQueue } from "@/components/app/task-queue";
 import { NeedsTeam, TeamScope } from "@/components/app/team-scope";
 import { requireCompletedOnboarding } from "@/lib/authz";
 import { prisma, withDatabaseFallback } from "@/lib/db";
@@ -41,14 +41,13 @@ export default async function TeamTasksPage({ searchParams }: PageProps) {
   }));
 
   return <section className="workspace-page suite-page">
-    <header className="suite-hero compact"><div><div className="suite-badges"><span className="analysis-badge">SHARED TEAM WORK</span></div><p className="page-kicker">Team Tasks</p><h1>Turn practice plans into assigned work.</h1><p>Tasks are stored in the team database, can be linked to a robot, assigned to a member, and moved through the engineering workflow.</p></div><ClipboardCheck size={28}/></header>
+    <header className="suite-hero compact"><div><p className="page-kicker">Team workspace / Tasks</p><h1>Make the next move clear.</h1><p>Assign work, find what matters, and keep the team moving.</p></div><ClipboardCheck size={28} aria-hidden="true" /></header>
     <TeamScope teams={teams} selectedId={team.id} path="/team/tasks" />
-    <section className="suite-panel"><div className="suite-panel-heading"><div><span className="section-overline">New task</span><h2>Plan real work</h2></div><Plus size={18}/></div><CreateTaskForm teamId={team.id} members={memberOptions} robots={robots}/></section>
-    <section className="suite-panel"><div className="suite-panel-heading"><div><span className="section-overline">Work queue</span><h2>{tasks.length} current task{tasks.length === 1 ? "" : "s"}</h2></div></div>
-      <div className="task-board-list">{tasks.map((task) => <article className="task-board-card" key={task.id}>
-        <div className="task-board-main"><div className="task-card-meta"><span>{task.priority.toLowerCase()}</span><span>{task.robot?.name || "No robot"}</span>{task.dueAt ? <span>Due {task.dueAt.toLocaleDateString()}</span> : null}</div><h3>{task.title}</h3>{task.description ? <p>{task.description}</p> : null}<small>{task.assignees.length ? `Assigned: ${task.assignees.map((row) => row.user.displayName || row.user.name || row.user.username || "Member").join(", ")}` : "Unassigned"}</small></div>
-        <TaskStatusForm taskId={task.id} status={task.status}/>
-      </article>)}{!tasks.length ? <div className="suite-empty">No tasks yet. Add one above when the team has real work to coordinate.</div> : null}</div>
-    </section>
+    <details className="suite-panel task-composer" open={!tasks.length}><summary><Plus size={18} aria-hidden="true" /><strong>New task</strong><span>Give the next step an owner</span></summary><CreateTaskForm teamId={team.id} members={memberOptions} robots={robots}/></details>
+    <TaskQueue key={team.id} members={memberOptions} tasks={tasks.map((task) => ({
+      id: task.id, title: task.title, description: task.description, status: task.status, priority: task.priority,
+      robotName: task.robot?.name ?? null, dueAt: task.dueAt?.toISOString() ?? null,
+      assignees: task.assignees.map(({ user: assignee }) => ({ id: assignee.id, name: assignee.displayName || assignee.name || assignee.username || "Member" })),
+    }))} />
   </section>;
 }

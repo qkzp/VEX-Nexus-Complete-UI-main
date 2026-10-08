@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./productivity.css";
 
 export const metadata: Metadata = {
   title: "BoltCanvas | Robotics Team Workspace",
